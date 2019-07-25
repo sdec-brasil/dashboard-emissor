@@ -29,7 +29,6 @@ export default function (sequelize, DataTypes) {
   settlement.associate = (models) => {
     settlement.hasMany(models.invoice, { as: 'Invoices' }); // Not sure if allowNull works here
     settlement.belongsTo(models.empresa, { targetKey: 'enderecoBlockchain', foreignKey: { name: 'empresa_responsavel', allowNull: false } });
-    settlement.belongsToMany(models.prefeitura, { through: 'settlementValues' });
   };
 
   return settlement;

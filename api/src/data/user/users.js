@@ -6,7 +6,6 @@ module.exports = [
       name: 'Boberson',
       username: 'bob',
       password: 'secret',
-      empresaCnpj: '1231231231235',
     },
   },
   {
