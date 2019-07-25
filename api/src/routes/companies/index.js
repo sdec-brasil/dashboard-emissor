@@ -8,7 +8,7 @@ export default {
   'POST /companies': {
     path: 'Companies.post',
     middlewares: [
-      login.ensureLoggedIn,
+      login.ensureLoggedIn(),
     ],
   },
 
@@ -19,7 +19,7 @@ export default {
   'POST /companies/:id': {
     path: 'Companies.update',
     middlewares: [
-      login.ensureLoggedIn,
+      login.ensureLoggedIn(),
     ],
   },
 };

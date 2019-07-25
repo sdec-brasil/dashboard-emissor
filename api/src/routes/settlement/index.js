@@ -8,7 +8,7 @@ export default {
   'POST /settlement': {
     path: 'Settlement.post',
     middlewares: [
-      login.ensureLoggedIn,
+      login.ensureLoggedIn(),
     ],
   },
 

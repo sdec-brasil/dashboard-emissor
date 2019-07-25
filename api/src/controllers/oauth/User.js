@@ -1,6 +1,6 @@
 // Imports
+import Login from 'connect-ensure-login';
 import passport from 'passport';
-import models from '../../models';
 import userService from '../../services/users';
 
 /**
@@ -21,7 +21,8 @@ import userService from '../../services/users';
    * @returns {undefined}
    */
 const info = [
-  passport.authenticate('bearer', { session: false }),
+  Login.ensureLoggedIn(),
+  // passport.authenticate('local', { session: false }),
   // req.authInfo is set using the `info` argument supplied by
   // `BearerStrategy`.  It is typically used to indicate scope of the token,
   // and used in access control checks.  For illustrative purposes, this

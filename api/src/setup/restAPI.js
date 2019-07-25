@@ -20,6 +20,9 @@ export default function (server) {
   server.use('/v1', mappedRoutes);
 
   // For demonstrations
+  server.get('/', (req, res) => {
+    res.status(200).send('Home Page');
+  });
   server.get('/login', Auth.loginPage);
   server.post('/login', Auth.login);
   server.get('/logout', Auth.logout);

@@ -30,8 +30,10 @@ const loginTemp = (req, res) => {
 };
 
 const account = [
-  Login.ensureLoggedIn({ redirectTo: '/' }),
-  (req, res) => res.status(200).send(req.user),
+  Login.ensureLoggedIn(),
+  (req, res) => {
+    res.status(200).send(req.user);
+  },
 ];
 
 const loginPage = (req, res) => {
