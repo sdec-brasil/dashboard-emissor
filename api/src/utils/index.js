@@ -7,6 +7,8 @@ import serializers from './serializers';
 import treatNestedFilters from './treatNestedFilters';
 import requests from './requests';
 import errors from './errors';
+import docker from './docker';
+import chain from './chain';
 
 export {
   query,
@@ -18,4 +20,6 @@ export {
   treatNestedFilters,
   requests,
   errors,
+  docker,
+  chain,
 };

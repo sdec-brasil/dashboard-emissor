@@ -1,7 +1,7 @@
 import ResponseList from '../../utils/response';
 import { limitSettings } from '../../config/config';
 import models from '../../models';
-import { treatNestedFilters, errors } from '../../utils';
+import { treatNestedFilters, errors, chain } from '../../utils';
 
 const sqs = require('sequelize-querystring');
 
@@ -58,7 +58,29 @@ const getCompany = async req =>
     });
 
 
+const postCompany = async (req) => {
+  const companyInfo = {
+    cnpj: req.body.cnpj,
+    razao: req.body.razaoSocial,
+    fantasia: req.body.nomeFantasia,
+    logEnd: req.body.enderecoEmpresa,
+    numEnd: req.body.numeroEndereco,
+    compEnd: req.body.complementoEndereco,
+    bairroEnd: req.body.bairroEndereco,
+    cidadeEnd: req.body.cidadeEndereco,
+    estadoEnd: req.body.unidadeFederacao,
+    paisEnd: req.body.paisEndereco,
+    cepEnd: req.body.cep,
+    email: req.body.email,
+    tel: req.body.telefone,
+  };
+  chain.registerEnterprise(companyInfo);
+  return { code: 201, data: 'created' };
+};
+
+
 export default {
   listCompanies,
   getCompany,
+  postCompany,
 };
