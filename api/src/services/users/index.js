@@ -13,20 +13,23 @@ const getUserInfo = async req => models.user.findOne({
     if (userInstance === null) {
       throw new errors.NotFoundError('User', `id ${req.user.id}`);
     } else {
-      delete userInstance.password;
+      // delete userInstance.password;
       const companies = await models.empresa.findAll({
         raw: true,
         where: {
           user_id: req.user.id,
         },
-        attributes: ['enderecoBlockchain'],
       });
-      return Promise.resolve({ userInstance, companies });
+      userInstance.companies = companies;
+      const addresses = await models.address.findAll({
+        raw: true,
+        where: {
+          walletId: req.user.walletId,
+        },
+      });
+      userInstance.wallet = addresses;
+      return { code: 200, data: userInstance };
     }
-  })
-  .then(({ userInstance, companies }) => {
-    userInstance.addresses = companies;
-    return { code: 200, data: userInstance };
   }).catch((err) => {
     throw err;
   });
@@ -64,12 +67,13 @@ const createNewUser = async (req) => {
 
 
 const registerNewAddress = async (req) => {
-  const enderecoBlockchain = await chain.generateAddress();
-  return models.empresa.create({ enderecoBlockchain, user_id: req.user.id })
-    .then((company) => {
-      const info = company.get({ plain: true });
-      const data = { enderecoBlockchain: info.enderecoBlockchain };
-      return { code: 200, data };
+  const address = await chain.generateAddress();
+  const { walletId } = req.user;
+  console.log('address', address);
+  return models.address.create({ id: address, walletId })
+    .then(createdAddress => ({ code: 200, data: createdAddress }))
+    .catch((err) => {
+      throw err;
     });
 };
 

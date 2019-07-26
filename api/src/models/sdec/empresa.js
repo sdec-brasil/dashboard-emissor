@@ -76,5 +76,15 @@ export default function (sequelize, DataTypes) {
     empresa.belongsTo(models.user, { targetKey: 'id', foreignKey: { name: 'user_id', allowNull: false } });
   };
 
+  empresa.beforeValidate(async (instance, options) => {
+    if (instance.isNewRecord) {
+      // create a wallet for user available keys
+      const wallet = await models.wallet.create();
+      const walletInfo = wallet.get({ plain: true });
+      instance.dataValues.walletId = walletInfo.id;
+    }
+    return instance;
+  });
+
   return empresa;
 }
