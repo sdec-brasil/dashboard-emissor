@@ -18,7 +18,6 @@ export default function (sequelize, DataTypes) {
 
   refreshToken.associate = (models) => {
     refreshToken.belongsTo(models.user, { targetKey: 'id', foreignKey: { name: 'user_id', allowNull: false } });
-    refreshToken.belongsTo(models.client, { targetKey: 'id', foreignKey: { name: 'client_id', allowNull: false } });
   };
 
   return refreshToken;

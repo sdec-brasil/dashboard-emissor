@@ -6,12 +6,8 @@ import fs from 'fs';
 // App Imports
 import routes from '../routes';
 import swaggerDefinition from '../../docs/definition';
-import RestExample from '../controllers/RestExample';
-import OAuth2 from '../controllers/oauth/OAuth2';
-import Client from '../controllers/oauth/Client';
 import User from '../controllers/oauth/User';
 import Auth from '../controllers/oauth/Auth';
-import Token from '../controllers/oauth/Token';
 
 // Setup RestAPI
 export default function (server) {
@@ -24,19 +20,14 @@ export default function (server) {
   server.use('/v1', mappedRoutes);
 
   // For demonstrations
-  server.get('/', RestExample.index);
-  server.get('/success', RestExample.test);
+  server.get('/', (req, res) => {
+    res.status(200).send('Home Page');
+  });
   server.get('/login', Auth.loginPage);
   server.post('/login', Auth.login);
   server.get('/logout', Auth.logout);
   server.get('/account', Auth.account);
-  server.get('/dialog/authorize', OAuth2.authorization);
-  server.post('/dialog/authorize/decision', OAuth2.decision);
-  server.post('/oauth/token', OAuth2.token);
   server.get('/api/userinfo', User.info);
-  server.get('/api/clientinfo', Client.info);
-  server.get('/api/tokeninfo', Token.info);
-  server.get('/api/revoke', Token.revoke);
 
 
   // Options for the swagger docs

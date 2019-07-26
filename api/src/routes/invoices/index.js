@@ -1,3 +1,4 @@
+import Login from 'connect-ensure-login';
 import passport from 'passport';
 import validators from '../../services/invoices/validators';
 
@@ -10,7 +11,8 @@ export default {
   'POST /invoices': {
     path: 'Invoices.post',
     middlewares: [
-      passport.authenticate('bearer', { session: false }),
+      // passport.authenticate('bearer', { session: false }),
+
       validators.postInvoice,
     ],
   },
@@ -26,7 +28,8 @@ export default {
   'POST /invoices/:txid': {
     path: 'Invoices.replaceInvoice',
     middlewares: [
-      passport.authenticate('bearer', { session: false }),
+      // passport.authenticate('bearer', { session: false }),
+      Login.ensureLoggedIn(),
       validators.postInvoice,
     ],
   },

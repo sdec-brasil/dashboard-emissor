@@ -22,7 +22,6 @@ export default function (sequelize, DataTypes) {
 
   accessToken.associate = (models) => {
     accessToken.belongsTo(models.user, { targetKey: 'id', foreignKey: { name: 'user_id', allowNull: true } });
-    accessToken.belongsTo(models.client, { targetKey: 'id', foreignKey: { name: 'client_id', allowNull: false } });
   };
 
   return accessToken;

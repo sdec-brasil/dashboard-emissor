@@ -9,7 +9,7 @@ const getUserInfo = async req => models.user.findOne({
   include: [{
     model: models.empresa,
   }],
-  attributes: ['id', 'name', 'username', 'createdAt', 'updatedAt', 'empresaCnpj'],
+  attributes: ['id', 'name', 'username', 'createdAt', 'updatedAt'],
 })
   .then((userInstance) => {
     if (userInstance !== null) {
