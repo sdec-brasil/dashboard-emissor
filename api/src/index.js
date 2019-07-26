@@ -8,6 +8,7 @@ import setupRestAPI from './setup/restAPI';
 import setupStartServer from './setup/startServer';
 import syncDatabase from './setup/syncDatabase';
 import setupErrorHandlers from './setup/errorHandlers';
+import { setupChainConnection } from './setup/chainConnection';
 
 // Create express server
 const server = express();
@@ -30,5 +31,7 @@ syncDatabase();
 // Start server
 setupStartServer(server);
 
+// Connect to chain
+setupChainConnection();
 
 export default server;
