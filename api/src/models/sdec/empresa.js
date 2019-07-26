@@ -1,33 +1,33 @@
 // Empresa
 export default function (sequelize, DataTypes) {
   const empresa = sequelize.define('empresa', {
-    cnpj: {
-      type: DataTypes.STRING(14),
-      primaryKey: true,
-      unique: true,
-      allowNull: false,
-    },
     enderecoBlockchain: {
       type: DataTypes.STRING(45),
       unique: true,
+      primaryKey: true,
       allowNull: false,
+    },
+    cnpj: {
+      type: DataTypes.STRING(14),
+      unique: true,
+      allowNull: true,
     },
     razaoSocial: {
       type: DataTypes.STRING(150),
       unique: true,
-      allowNull: false,
+      allowNull: true,
     },
     nomeFantasia: {
       type: DataTypes.STRING(60),
-      allowNull: false,
+      allowNull: true,
     },
     enderecoEmpresa: {
       type: DataTypes.STRING(125),
-      allowNull: false,
+      allowNull: true,
     },
     numeroEndereco: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      allowNull: true,
     },
     complementoEndereco: {
       type: DataTypes.STRING(60),
@@ -35,15 +35,15 @@ export default function (sequelize, DataTypes) {
     },
     bairroEndereco: {
       type: DataTypes.STRING(60),
-      allowNull: false,
+      allowNull: true,
     },
     cidadeEndereco: {
       type: DataTypes.STRING(7),
-      allowNull: false,
+      allowNull: true,
     },
     unidadeFederacao: {
       type: DataTypes.STRING(2),
-      allowNull: false,
+      allowNull: true,
     },
     paisEndereco: {
       type: DataTypes.STRING(4),
@@ -51,7 +51,7 @@ export default function (sequelize, DataTypes) {
     },
     cep: {
       type: DataTypes.STRING(8),
-      allowNull: false,
+      allowNull: true,
     },
     email: {
       type: DataTypes.STRING(80),
@@ -72,7 +72,9 @@ export default function (sequelize, DataTypes) {
     freezeTableName: true,
     timestamps: false,
   });
-  // TODO: deveria ter uma FK para prefeituras?
+  empresa.associate = (models) => {
+    empresa.belongsTo(models.user, { targetKey: 'id', foreignKey: { name: 'user_id', allowNull: false } });
+  };
 
   return empresa;
 }

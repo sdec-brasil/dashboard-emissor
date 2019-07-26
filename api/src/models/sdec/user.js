@@ -26,9 +26,9 @@ export default function (sequelize, DataTypes) {
     tableName: 'user',
   });
 
-  user.associate = (models) => {
-    user.belongsTo(models.empresa, { targetKey: 'cnpj', foreignKey: { name: 'empresaCnpj', allowNull: true } });
-  };
+  // user.associate = (models) => {
+  //   user.belongsTo(models.empresa, { targetKey: 'cnpj', foreignKey: { name: 'empresaCnpj', allowNull: true } });
+  // };
 
   user.beforeSave((userInstance, options) => {
     // now we only want to re-hash the password if it was changed.

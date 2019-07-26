@@ -22,4 +22,12 @@ async function registerEnterprise(json) {
   }
 }
 
-export default { registerEnterprise };
+async function generateAddress(json) {
+  const address = await master.node.getNewAddress();
+  return address;
+}
+
+export default {
+  registerEnterprise,
+  generateAddress,
+};

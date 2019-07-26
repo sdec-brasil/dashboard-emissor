@@ -1,22 +1,32 @@
 import models from '../../models';
-import { errors, requests } from '../../utils';
+import { errors, requests, chain } from '../../utils';
 
 
 const getUserInfo = async req => models.user.findOne({
   where: {
     id: req.user.id,
   },
-  include: [{
-    model: models.empresa,
-  }],
+  raw: true,
   attributes: ['id', 'name', 'username', 'createdAt', 'updatedAt'],
 })
-  .then((userInstance) => {
-    if (userInstance !== null) {
+  .then(async (userInstance) => {
+    if (userInstance === null) {
+      throw new errors.NotFoundError('User', `id ${req.user.id}`);
+    } else {
       delete userInstance.password;
-      return { code: 200, data: userInstance };
+      const companies = await models.empresa.findAll({
+        raw: true,
+        where: {
+          user_id: req.user.id,
+        },
+        attributes: ['enderecoBlockchain'],
+      });
+      return Promise.resolve({ userInstance, companies });
     }
-    throw new errors.NotFoundError('User', `id ${req.user.id}`);
+  })
+  .then(({ userInstance, companies }) => {
+    userInstance.addresses = companies;
+    return { code: 200, data: userInstance };
   }).catch((err) => {
     throw err;
   });
@@ -53,8 +63,19 @@ const createNewUser = async (req) => {
 };
 
 
+const registerNewAddress = async (req) => {
+  const enderecoBlockchain = await chain.generateAddress();
+  return models.empresa.create({ enderecoBlockchain, user_id: req.user.id })
+    .then((company) => {
+      const info = company.get({ plain: true });
+      const data = { enderecoBlockchain: info.enderecoBlockchain };
+      return { code: 200, data };
+    });
+};
+
 export default {
   getUserInfo,
   updateUser,
   createNewUser,
+  registerNewAddress,
 };

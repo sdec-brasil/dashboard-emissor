@@ -24,4 +24,11 @@ export default {
       validators.createUser,
     ],
   },
+
+  'POST /user/new-address': {
+    path: 'Users.registerNewAddress',
+    middlewares: [
+      login.ensureLoggedIn(),
+    ],
+  },
 };

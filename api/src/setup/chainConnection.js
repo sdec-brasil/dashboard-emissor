@@ -43,7 +43,7 @@ async function setupChainConnection() {
   master.addr = (await master.node.getAddresses())['0'].toString();
 
   await dockers.exec(`docker exec docker-multichain_masternode_1 multichain-cli MyChain grant ${slave.addr} activate,mine 0`);
-  console.log('Connected');
+  console.log('Connected to chain');
 }
 
 export { setupChainConnection, master, slave };
