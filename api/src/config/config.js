@@ -1,6 +1,8 @@
 //
 // The configuration options of the server
 //
+import passportJWT from 'passport-jwt';
+import { crypto } from '../utils/crypto';
 
 export const sessions = {
   secret: 'm3g4 s3cr3t',
@@ -80,3 +82,9 @@ export const limitSettings = {
     get: 100,
   },
 };
+
+
+export const jwtOptions = {};
+jwtOptions.jwtFromRequest = passportJWT.ExtractJwt.fromAuthHeaderAsBearerToken();
+jwtOptions.secretOrKey = crypto.publicKey;
+jwtOptions.algorithm = ['RS256'];

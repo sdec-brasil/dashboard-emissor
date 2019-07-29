@@ -92,19 +92,10 @@ validate.clientExists = (client) => {
  * @throws  {Error}   If the token is not valid
  * @returns {Promise} Resolved with the user or client associated with the token if valid
  */
-validate.token = (token, accessToken) => {
-  crypto.verifyToken(accessToken);
-
-  // token is a user token
-  if (token.user_id != null) {
-    return db.users.findById(token.user_id)
-      .then(user => validate.userExists(user))
-      .then(user => user);
-  }
-  // token is a client token
-  return db.clients.findById(token.client_id)
-    .then(client => validate.clientExists(client))
-    .then(client => client);
+validate.token = (accessToken) => {
+  const tk = crypto.verifyToken(accessToken);
+  return db.users.findById(tk.id)
+    .then(user => validate.userExists(user));
 };
 
 /**

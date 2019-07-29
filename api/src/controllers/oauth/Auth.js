@@ -1,6 +1,7 @@
 // Imports
-import passport from 'passport';
 import Login from 'connect-ensure-login';
+import passport from 'passport';
+import { query, crypto } from '../../utils';
 
 const error = (req, res) => res.status(401).send('Não conseguiu logar');
 
@@ -8,10 +9,29 @@ const error = (req, res) => res.status(401).send('Não conseguiu logar');
   * Authenticate normal login page using strategy of authenticate
   */
 const login = [
-  passport.authenticate('local', {
-    successReturnToOrRedirect: '/',
-    failureRedirect: '/error',
-  }),
+  // passport.authenticate('local', {
+  //   successReturnToOrRedirect: '/',
+  //   failureRedirect: '/error',
+  // }),
+  async (req, res, next) => {
+    const { username, password } = req.body;
+    if (username && password) {
+      // we get the user with the name and save the resolved promise
+      const user = await query.users.findByUsername(username);
+      if (!user) {
+        res.status(401).json({ msg: 'No such user found', username });
+      }
+      if (crypto.comparePassword(password, user.password)) {
+        // from now on we’ll identify the user by the id and the id is
+        // the only personalized value that goes into our token
+        const { id } = user;
+        const token = crypto.createToken({ id });
+        res.json({ msg: 'ok', token });
+      } else {
+        res.status(401).json({ msg: 'User or Password incorrect' });
+      }
+    }
+  },
 ];
 
 /**
@@ -30,7 +50,7 @@ const loginTemp = (req, res) => {
 };
 
 const account = [
-  Login.ensureLoggedIn(),
+  passport.authenticate('jwt', { session: false }),
   (req, res) => {
     res.status(200).send(req.user);
   },

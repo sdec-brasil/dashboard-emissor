@@ -6,6 +6,7 @@ import morgan from 'morgan';
 import passport from 'passport';
 import session from 'express-session';
 import path from 'path';
+import passportJWT from 'passport-jwt';
 import setupPassport from './passport';
 import sequelizeConnection from './databaseConnection';
 
@@ -47,6 +48,7 @@ export default function (server) {
     cookie: { maxAge: sessions.maxAge },
     store: sequelizeSessionStore,
   }));
+
 
   // Use Passport
   server.use(passport.initialize());

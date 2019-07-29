@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import jwt from 'jsonwebtoken';
 import uuid from 'uuid/v4';
-
+import { jwtOptions } from '../../config/config';
 
 const bcrypt = require('bcrypt');
 
@@ -29,16 +29,12 @@ export const uid = {
  * @param  {String} sub - The subject or identity of the token.
  * @return {String} The JWT Token
  */
-export const createToken = ({ exp = 3600, sub = '' } = {}) => {
-  const id = uid.generate();
+export const createToken = ({ id, exp = 3600, sub = '' } = {}) => {
   const token = jwt.sign({
-    jti: id,
+    id,
     sub,
     exp: Math.floor(Date.now() / 1000) + exp,
-  }, privateKey, {
-    algorithm: 'RS256',
-  });
-
+  }, privateKey, { algorithm: 'RS256' });
 
   return token;
 };
@@ -57,4 +53,6 @@ export const crypto = {
   hashPassword,
   comparePassword,
   generateSalt,
+  publicKey,
+  privateKey,
 };
