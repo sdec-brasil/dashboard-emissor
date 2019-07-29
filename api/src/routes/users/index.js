@@ -1,4 +1,4 @@
-import login from 'connect-ensure-login';
+import passport from 'passport';
 import validators from '../../services/users/validators';
 
 export default {
@@ -6,14 +6,14 @@ export default {
   'GET /user': {
     path: 'Users.getMe',
     middlewares: [
-      login.ensureLoggedIn(),
+      passport.authenticate('jwt', { session: false }),
     ],
   },
   // Edita informações do usuário logado
   'PATCH /user': {
     path: 'Users.updateUser',
     middlewares: [
-      login.ensureLoggedIn(),
+      passport.authenticate('jwt', { session: false }),
       validators.editUser,
     ],
   },
@@ -28,7 +28,7 @@ export default {
   'POST /user/new-address': {
     path: 'Users.registerNewAddress',
     middlewares: [
-      login.ensureLoggedIn(),
+      passport.authenticate('jwt', { session: false }),
     ],
   },
 };

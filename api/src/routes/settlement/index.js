@@ -1,4 +1,4 @@
-import login from 'connect-ensure-login';
+import passport from 'passport';
 
 export default {
   // Retorna uma lista das últimas notas de pagamentos emitidas pelo sistema
@@ -8,7 +8,7 @@ export default {
   'POST /settlement': {
     path: 'Settlement.post',
     middlewares: [
-      login.ensureLoggedIn(),
+      passport.authenticate('jwt', { session: false }),
     ],
   },
 

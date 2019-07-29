@@ -6,8 +6,7 @@ import fs from 'fs';
 // App Imports
 import routes from '../routes';
 import swaggerDefinition from '../../docs/definition';
-import User from '../controllers/oauth/User';
-import Auth from '../controllers/oauth/Auth';
+import Auth from '../controllers/authorization/Auth';
 
 // Setup RestAPI
 export default function (server) {
@@ -23,11 +22,8 @@ export default function (server) {
   server.get('/', (req, res) => {
     res.status(200).send('Home Page');
   });
-  server.get('/login', Auth.loginPage);
   server.post('/login', Auth.login);
-  server.get('/logout', Auth.logout);
   server.get('/account', Auth.account);
-  server.get('/api/userinfo', User.info);
 
 
   // Options for the swagger docs

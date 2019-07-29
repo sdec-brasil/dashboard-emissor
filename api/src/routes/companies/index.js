@@ -1,4 +1,4 @@
-import login from 'connect-ensure-login';
+import passport from 'passport';
 
 export default {
   // Retorna uma lista de Companies
@@ -8,7 +8,7 @@ export default {
   'POST /companies': {
     path: 'Companies.post',
     middlewares: [
-      login.ensureLoggedIn(),
+      passport.authenticate('jwt', { session: false }),
     ],
   },
 
@@ -19,7 +19,7 @@ export default {
   'POST /companies/:id': {
     path: 'Companies.update',
     middlewares: [
-      login.ensureLoggedIn(),
+      passport.authenticate('jwt', { session: false }),
     ],
   },
 };
