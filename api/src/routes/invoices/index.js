@@ -1,4 +1,3 @@
-import Login from 'connect-ensure-login';
 import passport from 'passport';
 import validators from '../../services/invoices/validators';
 

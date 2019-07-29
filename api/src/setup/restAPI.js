@@ -6,7 +6,7 @@ import fs from 'fs';
 // App Imports
 import routes from '../routes';
 import swaggerDefinition from '../../docs/definition';
-import Auth from '../controllers/authorization/Auth';
+import Auth from '../controllers/Auth';
 
 // Setup RestAPI
 export default function (server) {

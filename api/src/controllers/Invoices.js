@@ -1,5 +1,5 @@
 /* eslint-disable class-methods-use-this */
-import { validationResult, check, param } from 'express-validator/check';
+import { validationResult } from 'express-validator/check';
 import service from '../services/invoices';
 
 
