@@ -9,6 +9,8 @@ import setupStartServer from './setup/startServer';
 import syncDatabase from './setup/syncDatabase';
 import setupErrorHandlers from './setup/errorHandlers';
 import { setupChainConnection } from './setup/chainConnection';
+import setupExplorerListeners from './setup/explorerListeners';
+
 
 // Create express server
 const server = express();
@@ -33,5 +35,8 @@ setupStartServer(server);
 
 // Connect to chain
 setupChainConnection();
+
+// start listening to explorer
+setupExplorerListeners();
 
 export default server;

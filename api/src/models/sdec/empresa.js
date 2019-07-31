@@ -61,10 +61,6 @@ export default function (sequelize, DataTypes) {
       type: DataTypes.STRING(20),
       allowNull: true,
     },
-    serviceType: {
-      type: DataTypes.STRING(5),
-      allowNull: true,
-    },
   },
   {
     underscored: false,

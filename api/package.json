@@ -32,6 +32,7 @@
   },
   "dependencies": {
     "@2fd/graphdoc": "^2.4.0",
+    "axios": "^0.19.0",
     "babel-jest": "^24.8.0",
     "babel-polyfill": "^6.26.0",
     "babel-preset-env": "^1.7.0",
@@ -45,6 +46,7 @@
     "cors": "^2.8.5",
     "ejs": "^2.6.1",
     "eslint-config-airbnb": "^17.1.0",
+    "eventsource": "^1.0.7",
     "express": "5.0.0-alpha.7",
     "express-graphql": "0.7.1",
     "express-routes-mapper": "^1.1.0",
