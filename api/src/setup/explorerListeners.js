@@ -36,14 +36,15 @@ export default function () {
           ...response,
           user_id: user.get('id'),
         });
+        // change addrInstance wallet to the wallet of the company
+        await addrInstance.update({ walletId: company.get('walletId') });
+        console.log(`Address ${addrInstance.get('id')} now belongs to company 
+          ${company.get('nomeFantasia')}.`);
       }
-
-      // change addrInstance wallet to the wallet of the company
-      await addrInstance.update({ walletId: company.get('walletId') });
-
-      console.log(`Address ${addrInstance.get('id')} now belongs to company 
-        ${company.get('nomeFantasia')}.`);
     }
+    // if we already have this company created,
+    // the company already have a wallet and an address.
+    // We will just ignore this new address authorization.
   });
 
   const invoicesStream = new EventSource('http://159.89.86.197:8000/v1/events/invoices');
