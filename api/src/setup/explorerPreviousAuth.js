@@ -22,13 +22,13 @@ const getFreeWallets = (limit, time) => models.address.findAll({
 
 const processItem = async (item) => {
   Promise(async (resolve) => {
-    const addr = await models.address.findByPk(item.id);
+    const addr = await models.address.findByPk(item.address);
     const user = await models.user.findOne({
       walletId: addr.get('walletId'),
     });
 
     const company = await models.empresa.create({
-      ...item.empresa,
+      ...item.Empresa,
       user_id: user.get('id'),
     });
     await addr.update({ walletId: company.get('walletId') });
