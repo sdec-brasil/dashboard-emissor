@@ -22,12 +22,12 @@ async function registerEnterprise(json) {
   }
 }
 
-async function generateAddress(json) {
-  const address = await master.node.getNewAddress();
-  return address;
+async function generateKeyPair(json) {
+  const pair = await master.node.createKeyPairs();
+  return pair;
 }
 
 export default {
   registerEnterprise,
-  generateAddress,
+  generateKeyPair,
 };

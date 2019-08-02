@@ -19,7 +19,7 @@ export default function () {
         where: { walletId: addrInstance.get('walletId') },
       });
       if (user === null) {
-        throw new Error(`AddressInstance ${addrInstance.get('id')} is not in the wallet of any user.
+        throw new Error(`AddressInstance ${addrInstance.get('address')} is not in the wallet of any user.
         (walletId = ${addrInstance.get('walletId')})`);
       }
       let company = await models.empresa.findOne(
@@ -38,7 +38,7 @@ export default function () {
         });
         // change addrInstance wallet to the wallet of the company
         await addrInstance.update({ walletId: company.get('walletId') });
-        console.log(`Address ${addrInstance.get('id')} now belongs to company 
+        console.log(`Address ${addrInstance.get('address')} now belongs to company 
           ${company.get('nomeFantasia')}.`);
       }
     }

@@ -13,6 +13,7 @@ const getFreeWallets = (limit, time) => models.address.findAll({
       },
     },
   ],
+  attributes: ['address'],
   where: {
     createdAt: { [Op.lte]: time },
   },
@@ -44,7 +45,7 @@ export default async function () {
   const limit = 30;
   let freeAddresses = await getFreeWallets(limit, now);
   while (freeAddresses.length) {
-    let addressesIds = freeAddresses.map(item => item.id);
+    let addressesIds = freeAddresses.map(item => item.address);
     addressesIds = addressesIds.join(' ');
     const response = await axios.get('http://159.89.86.197:8000/v1/emitters',
       {

@@ -23,6 +23,7 @@ const getUserInfo = async req => models.user.findOne({
       userInstance.companies = companies;
       const addresses = await models.address.findAll({
         raw: true,
+        attributes: ['address'],
         where: {
           walletId: req.user.walletId,
         },
@@ -67,11 +68,21 @@ const createNewUser = async (req) => {
 
 
 const registerNewAddress = async (req) => {
-  const address = await chain.generateAddress();
+  const [pair] = await chain.generateKeyPair();
   const { walletId } = req.user;
-  console.log('address', address);
-  return models.address.create({ id: address, walletId })
-    .then(createdAddress => ({ code: 200, data: createdAddress }))
+  return models.address.create(
+    {
+      address: pair.address,
+      privateKey: pair.privkey,
+      publicKey: pair.pubkey,
+      walletId,
+    },
+  )
+    .then(createdAddress => ({
+      code: 200,
+      data:
+      { address: createdAddress.get('address') },
+    }))
     .catch((err) => {
       throw err;
     });
