@@ -74,7 +74,12 @@ const postCompany = async (req) => {
     email: req.body.email,
     tel: req.body.telefone,
   };
-  chain.registerEnterprise(companyInfo);
+  // chain.registerEnterprise(companyInfo);
+  await models.empresa.create({
+    ...companyInfo,
+    enderecoBlockchain: req.body.enderecoBlockchain,
+    user_id: req.body.user_id,
+  });
   return { code: 201, data: 'created' };
 };
 

@@ -6,7 +6,7 @@ export default function (sequelize, DataTypes) {
       primaryKey: true,
     },
   }, {
-    underscored: true,
+    underscored: false,
     tableName: 'address',
   });
 

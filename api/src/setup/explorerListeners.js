@@ -6,8 +6,8 @@ import models from '../models';
 export default function () {
   console.log('SETUP - Setting explorer listeners...');
 
-  const companiesStream = new EventSource('http://159.89.86.197:8000/v1/events/companies');
-  companiesStream.addEventListener('company:new', async (e) => {
+  const companiesStream = new EventSource('http://159.89.86.197:8000/v1/events/emitters');
+  companiesStream.addEventListener('emitter:new', async (e) => {
     console.log(`companiesStream: ${e.type} - ${e.data}`);
 
     const [cnpj, address, txid] = e.data.split('|');
