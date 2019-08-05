@@ -10,8 +10,7 @@ export default {
   'POST /invoices': {
     path: 'Invoices.post',
     middlewares: [
-      // passport.authenticate('bearer', { session: false }),
-
+      passport.authenticate('jwt', { session: false }),
       validators.postInvoice,
     ],
   },
