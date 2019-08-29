@@ -7,7 +7,7 @@ export default function () {
   console.info('SETUP - Syncing database tables...');
 
   // Create tables
-  models.sequelize
+  return models.sequelize
     .sync({ force: false })
     .then(() => {
       console.info('INFO - Database sync complete.');

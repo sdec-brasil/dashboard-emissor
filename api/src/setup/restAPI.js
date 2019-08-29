@@ -2,6 +2,7 @@
 import mapRoutes from 'express-routes-mapper';
 import swaggerJSDoc from 'swagger-jsdoc';
 import fs from 'fs';
+import http from 'http';
 
 // App Imports
 import routes from '../routes';

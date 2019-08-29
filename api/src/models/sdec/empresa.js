@@ -1,3 +1,5 @@
+import models from '../index';
+
 // Empresa
 export default function (sequelize, DataTypes) {
   const empresa = sequelize.define('empresa', {
@@ -61,10 +63,6 @@ export default function (sequelize, DataTypes) {
       type: DataTypes.STRING(20),
       allowNull: true,
     },
-    serviceType: {
-      type: DataTypes.STRING(5),
-      allowNull: true,
-    },
   },
   {
     underscored: false,
@@ -74,6 +72,7 @@ export default function (sequelize, DataTypes) {
   });
   empresa.associate = (models) => {
     empresa.belongsTo(models.user, { targetKey: 'id', foreignKey: { name: 'user_id', allowNull: false } });
+    empresa.belongsTo(models.wallet, { targetKey: 'id', foreignKey: { name: 'walletId', allowNull: true } });
   };
 
   empresa.beforeValidate(async (instance, options) => {

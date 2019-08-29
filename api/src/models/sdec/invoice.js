@@ -14,6 +14,12 @@ export default function (sequelize, DataTypes) {
       type: DataTypes.STRING(64),
       allowNull: true,
     },
+    // TODO: maybe this needs to be a foreignKey?
+    // we would have to add the  prefeitura model to this application
+    prefeituraIncidencia: {
+      type: DataTypes.STRING(7),
+      allowNull: false,
+    },
     // ----- Campos da Prestação:
     baseCalculo: {
       type: DataTypes.BIGINT({ unsigned: true }),
@@ -247,7 +253,8 @@ export default function (sequelize, DataTypes) {
   });
 
   invoice.associate = (models) => {
-    invoice.belongsTo(models.empresa, { targetKey: 'enderecoBlockchain', as: 'emissor', foreignKey: { name: 'enderecoEmissor', allowNull: false } });
+    invoice.belongsTo(models.address, { targetKey: 'address', as: 'emissor', foreignKey: { name: 'enderecoEmissor', allowNull: false } });
+    // invoice.belongsTo(models.prefeitura, { targetKey: 'codigoMunicipio', foreignKey: { name: 'prefeituraIncidencia', allowNull: false } });
   };
 
   return invoice;

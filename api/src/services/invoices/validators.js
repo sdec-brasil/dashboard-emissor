@@ -5,18 +5,30 @@ const validators = {};
 validators.postInvoice = [
   body('substitutes').not().exists(),
   body('substitutedBy').not().exists(),
-  body('enderecoEmissor').not().exists(),
+  body('enderecoEmissor').not().exists()
+    .custom((value, { req }) => {
+      models.address.findByPk(value).then((addr) => {
+        if (addr === null) throw new Error('enderecoEmissor não encontrado no sistema.');
+        models.empresa.findOne({ where: { walletId: addr.get('walletId') } })
+          .then((empresa) => {
+            if (empresa === null) throw new Error('enderecoEmissor ainda não foi autorizado por nenhuma empresa.');
+            if (empresa.get('user_id') !== req.user.id) throw new Error('Essa empresa não pertence à este usuário.');
+          });
+      });
+    }),
   body('prestacao.prefeituraIncidencia', 'valor nao valido').isNumeric()
     .isLength({ min: 7, max: 7 })
     .custom(async (value, { req }) => {
-      const count = await models.prefeitura.count({
-        where: {
-          codigoMunicipio: value,
-        },
-      });
-      if (count === 0) {
-        throw new Error('prefeitura não encontrada no sistema');
-      }
+      // TODO: should this be validated?
+      // we will need to add model prefeitura to this application
+      // const count = await models.prefeitura.count({
+      //   where: {
+      //     codigoMunicipio: value,
+      //   },
+      // });
+      // if (count === 0) {
+      //   throw new Error('prefeitura não encontrada no sistema');
+      // }
     }),
   body('prestacao.baseCalculo', 'O valor esta incorreto')
     .isInt()

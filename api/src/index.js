@@ -9,6 +9,10 @@ import setupStartServer from './setup/startServer';
 import syncDatabase from './setup/syncDatabase';
 import setupErrorHandlers from './setup/errorHandlers';
 import { setupChainConnection } from './setup/chainConnection';
+import setupExplorerListeners from './setup/explorerListeners';
+import searchPreviousAuth from './setup/explorerPreviousAuth';
+import models from './models';
+
 
 // Create express server
 const server = express();
@@ -26,12 +30,19 @@ setupErrorHandlers(server);
 // setupGraphQL(server);
 
 // Sync Database
-// syncDatabase();
+syncDatabase();
 
 // Start server
 setupStartServer(server);
 
 // Connect to chain
 setupChainConnection();
+
+// start listening to explorer
+setupExplorerListeners();
+
+// check if we missed any authorizations while
+// the server was off.
+searchPreviousAuth();
 
 export default server;

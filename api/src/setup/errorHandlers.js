@@ -1,7 +1,7 @@
 import { errors } from '../utils';
 
 /*
-Here the error andlers will be registered.
+Here the error handlers will be registered.
 
 Keep in mind that the order in which the handlers
 appear here matter.

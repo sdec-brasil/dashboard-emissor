@@ -34,7 +34,7 @@ export default function (sequelize, DataTypes) {
   user.beforeValidate(async (userInstance, options) => {
     if (userInstance.isNewRecord) {
       // create a wallet for user available keys
-      const wallet = await models.wallet.create();
+      const wallet = await models.wallet.create({ userWallet: true });
       const walletInfo = wallet.get({ plain: true });
       userInstance.dataValues.walletId = walletInfo.id;
     }

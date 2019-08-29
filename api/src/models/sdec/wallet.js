@@ -6,6 +6,11 @@ export default function (sequelize, DataTypes) {
       defaultValue: DataTypes.UUIDV1,
       primaryKey: true,
     },
+    userWallet: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false,
+    },
   }, {
     underscored: true,
     tableName: 'wallet',

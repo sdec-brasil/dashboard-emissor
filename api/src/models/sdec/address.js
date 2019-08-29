@@ -1,12 +1,18 @@
 // Address
 export default function (sequelize, DataTypes) {
   const address = sequelize.define('address', {
-    id: {
-      type: DataTypes.STRING(64),
+    address: {
+      type: DataTypes.STRING(128),
       primaryKey: true,
     },
+    privateKey: {
+      type: DataTypes.STRING(128),
+    },
+    publicKey: {
+      type: DataTypes.STRING(128),
+    },
   }, {
-    underscored: true,
+    underscored: false,
     tableName: 'address',
   });
 
