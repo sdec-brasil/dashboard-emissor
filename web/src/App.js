@@ -3,13 +3,14 @@ import { Provider } from 'react-redux';
 import './App.scss';
 
 import Store from './store';
-import SideMenu from './components/SideMenu';
+import MainPage from './components/MainPage';
 import './@uik/styles.css';
+
 
 function App() {
   return (
     <Provider store={Store}>
-      <SideMenu />
+      <MainPage />
     </Provider>
   );
 }

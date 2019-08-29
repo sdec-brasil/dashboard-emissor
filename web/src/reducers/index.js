@@ -1,11 +1,17 @@
 import { combineReducers } from 'redux';
 
-const initialState = {};
+const initialState = {
+  isAuthenticated: false,
+};
 
-const defaultState = (state = initialState, action) => {
+const mainState = (state = initialState, action) => {
   switch (action.type) {
     case 'algo': {
       return { ...state };
+    }
+
+    case 'loggedIn': {
+      return { ...state, isAuthenticated: true };
     }
 
     default: {
@@ -15,7 +21,7 @@ const defaultState = (state = initialState, action) => {
 };
 
 const rootReducer = combineReducers({
-  defaultState,
+  mainState,
 });
 
 export default rootReducer;
