@@ -17,8 +17,9 @@ const slave = {};
 
 async function setupChainConnection() {
   console.log('SETUP - Connecting to chain...');
+  const slaveName = process.env.SLAVE_NAME || 'docker-multichain_slavenode_1';
   let slavePassword = await dockers.exec(
-    'docker exec docker-multichain_slavenode_1 cat root/.multichain/MyChain/multichain.conf',
+    `docker exec ${slaveName} cat root/.multichain/MyChain/multichain.conf`,
   );
   slavePassword = dockers.extractPassword(slavePassword);
 
@@ -42,7 +43,8 @@ async function setupChainConnection() {
 
   master.addr = (await master.node.getAddresses())['0'].toString();
 
-  await dockers.exec(`docker exec docker-multichain_masternode_1 multichain-cli MyChain grant ${slave.addr} activate,mine 0`);
+  const masterName = process.env.MASTER_NAME || 'docker-multichain_masternode_1';
+  await dockers.exec(`docker exec ${masterName} multichain-cli MyChain grant ${slave.addr} activate,mine 0`);
   console.log('INFO - Connected to chain.');
 }
 

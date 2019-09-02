@@ -20,11 +20,11 @@ const connection = new Sequelize(
   databaseConfigEnv.username,
   databaseConfigEnv.password,
   {
-    host: databaseConfigEnv.host,
+    host: process.env.DB_HOST || databaseConfigEnv.host,
     dialect: databaseConfigEnv.dialect,
     logging: false,
     operatorsAliases: Sequelize.Op,
-    port: databaseConfigEnv.port,
+    port: process.env.DB_PORT || databaseConfigEnv.port,
   },
   opts,
 );
