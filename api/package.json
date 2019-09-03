@@ -17,7 +17,7 @@
     "env": {
       "DB_HOST": "localhost",
       "DB_PORT": 4307,
-      "SERVER_PORT": 9000,
+      "SERVER_PORT": 8000,
       "SLAVE_NAME": "docker-dashboard-emissor_slavenode_1",
       "MASTER_NAME": "docker-dashboard-emissor_masternode_1"
     }

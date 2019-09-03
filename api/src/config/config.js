@@ -20,7 +20,7 @@ export const sessions = {
 
 export const general = {
   graphqlEndpoint: '/graphql',
-  port: process.env.SERVER_PORT || 9000,
+  port: process.env.SERVER_PORT || 8000,
   graphql: {
     ide: true,
     pretty: true,

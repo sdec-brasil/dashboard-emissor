@@ -5,7 +5,7 @@
         "version": "1.0.0",
         "description": "API Pública do Sistema"
     },
-    "host": "localhost:9000",
+    "host": "localhost:8000",
     "basePath": "/",
     "paths": {},
     "components": {},
