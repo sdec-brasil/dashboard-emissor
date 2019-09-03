@@ -14,6 +14,7 @@ export default function () {
       seed(models)
         .then(() => {
           console.info('INFO - Done populating tables');
+          return Promise.resolve();
         })
         .catch((err) => {
           console.info('ERR - Populating Tables');

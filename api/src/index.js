@@ -30,19 +30,19 @@ setupErrorHandlers(server);
 // setupGraphQL(server);
 
 // Sync Database
-syncDatabase();
+syncDatabase().then(() => {
+  // start listening to explorer
+  setupExplorerListeners();
+
+  // check if we missed any authorizations while
+  // the server was off.
+  searchPreviousAuth();
+});
 
 // Start server
 setupStartServer(server);
 
 // Connect to chain
 setupChainConnection();
-
-// start listening to explorer
-setupExplorerListeners();
-
-// check if we missed any authorizations while
-// the server was off.
-searchPreviousAuth();
 
 export default server;
