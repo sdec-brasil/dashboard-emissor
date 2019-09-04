@@ -6,7 +6,7 @@ import UserPage from '../UserPage';
 import LoginPage from '../LoginPage';
 
 const MainPage = () => {
-  const isAuthenticated = useSelector(state => state.mainState.isAuthenticated);
+  const isAuthenticated = useSelector(state => state.userState.token);
 
   return (
     <div>

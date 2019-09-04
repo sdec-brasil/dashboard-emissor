@@ -1,27 +1,11 @@
 import { combineReducers } from 'redux';
+import mainState from './mainState';
+import userState from './userState';
 
-const initialState = {
-  isAuthenticated: false,
-};
-
-const mainState = (state = initialState, action) => {
-  switch (action.type) {
-    case 'algo': {
-      return { ...state };
-    }
-
-    case 'loggedIn': {
-      return { ...state, isAuthenticated: true };
-    }
-
-    default: {
-      return { ...state };
-    }
-  }
-};
 
 const rootReducer = combineReducers({
   mainState,
+  userState,
 });
 
 export default rootReducer;

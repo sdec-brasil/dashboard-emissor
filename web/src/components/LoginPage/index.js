@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import {
   UikFormInputGroup, UikButton, UikInput, UikWidget,
   UikContainerHorizontal, UikContainerVertical, UikNavTitle,
 } from '../../@uik';
+import { setToken, setUser } from '../../reducers/userState';
+import api from '../../utils/api';
+import store from '../../store';
 
 const widgetStyle = {
   margin: 0,
@@ -14,6 +17,18 @@ const widgetStyle = {
   padding: '25px',
 };
 
+const login = (username, password) => api.post('/login', { username, password })
+  .then((response) => {
+    // logged in!
+    console.log(`logged in! token is ${response.token}`);
+    store.dispatch(setToken(response.token));
+
+    // get user info
+    return api.get('/v1/user').then((userInfo) => {
+      store.dispatch(setUser(userInfo));
+    });
+  });
+
 const LoginPage = () => {
   const dispatch = useDispatch();
 
@@ -23,8 +38,18 @@ const LoginPage = () => {
 
   const logIn = (e) => {
     setLoading(true);
-    console.log('Fingindo autenticar-se...');
-    setTimeout(() => dispatch({ type: 'loggedIn' }), 500);
+    api.post('/login', { username, password })
+      .then((response) => {
+        // console.log(response);
+        // logged in!
+        store.dispatch(setToken(response.data.token));
+
+        // get user info
+        return api.get('/v1/user').then((userInfo) => {
+          store.dispatch(setUser(userInfo));
+        });
+      })
+      .catch(error => console.error(error));
   };
 
   return (
