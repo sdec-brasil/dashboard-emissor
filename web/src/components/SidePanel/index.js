@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import React from 'react';
+import { useSelector } from 'react-redux';
 import {
   UikNavPanel, UikNavSection, UikNavTitle, UikNavSectionTitle, UikNavLink,
 } from '../../@uik';
 
-const SidePanel = () => {
+const SidePanel = (props) => {
   const currentSidePanelPage = useSelector(state => state.mainState.currentSidePanelPage);
 
   return (
@@ -19,6 +19,9 @@ const SidePanel = () => {
       <UikNavSection>
         <UikNavSectionTitle>Suporte</UikNavSectionTitle>
         <UikNavLink>Perguntas Frequentes</UikNavLink>
+      </UikNavSection>
+      <UikNavSection>
+        <UikNavLink onClick={props.logout}>Logout</UikNavLink>
       </UikNavSection>
     </UikNavPanel>
   );

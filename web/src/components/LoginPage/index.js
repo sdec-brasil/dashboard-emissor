@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import Cookies from 'universal-cookie';
 import {
   UikFormInputGroup, UikButton, UikInput, UikWidget,
   UikContainerHorizontal, UikContainerVertical, UikNavTitle,
@@ -7,6 +7,9 @@ import {
 import { setToken, setUser } from '../../reducers/userState';
 import api from '../../utils/api';
 import store from '../../store';
+
+
+const cookies = new Cookies();
 
 const widgetStyle = {
   margin: 0,
@@ -17,39 +20,30 @@ const widgetStyle = {
   padding: '25px',
 };
 
-const login = (username, password) => api.post('/login', { username, password })
-  .then((response) => {
-    // logged in!
-    console.log(`logged in! token is ${response.token}`);
-    store.dispatch(setToken(response.token));
-
-    // get user info
-    return api.get('/v1/user').then((userInfo) => {
-      store.dispatch(setUser(userInfo));
-    });
-  });
-
 const LoginPage = () => {
-  const dispatch = useDispatch();
-
   const [loading, setLoading] = useState(false);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
-  const logIn = (e) => {
+  const logIn = () => {
     setLoading(true);
     api.post('/login', { username, password })
       .then((response) => {
-        // console.log(response);
         // logged in!
-        store.dispatch(setToken(response.data.token));
+        const { token } = response.data;
+        store.dispatch(setToken(token));
+        api.defaults.headers.common.Authorization = `Bearer ${token}`;
+        cookies.set('token', token);
 
         // get user info
         return api.get('/v1/user').then((userInfo) => {
           store.dispatch(setUser(userInfo));
         });
       })
-      .catch(error => console.error(error));
+      .catch((error) => {
+        setLoading(false);
+        console.error(error);
+      });
   };
 
   return (
