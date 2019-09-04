@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
+import { Redirect } from 'react-router-dom';
 import Cookies from 'universal-cookie';
 import {
   UikFormInputGroup, UikButton, UikInput, UikWidget,
@@ -20,10 +22,15 @@ const widgetStyle = {
   padding: '25px',
 };
 
-const LoginPage = () => {
+const LoginPage = (props) => {
   const [loading, setLoading] = useState(false);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+
+
+  const { from } = props.location.state || { from: { pathname: '/' } };
+
+  const isAuthenticated = useSelector(state => state.userState.token);
 
   const logIn = () => {
     setLoading(true);
@@ -45,6 +52,8 @@ const LoginPage = () => {
         console.error(error);
       });
   };
+
+  if (isAuthenticated) return <Redirect to={from} />;
 
   return (
     <UikWidget style={widgetStyle}>
