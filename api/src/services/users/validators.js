@@ -3,7 +3,7 @@ import models from '../../models';
 
 const validators = {};
 validators.createUser = [
-  body('name').exists().isString(),
+  body('name').isString(),
   body('username').exists().isString().isAlphanumeric()
     .custom(async (value, { req }) => {
       const exists = await models.user.count(
