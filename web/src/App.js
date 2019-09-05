@@ -10,18 +10,17 @@ import store from './store';
 import PrivateRoute from './components/PrivateRoute';
 import LoginPage from './components/LoginPage';
 import UserPage from './components/UserPage';
+import RegisterPage from './components/RegisterPage';
 import './@uik/styles.css';
 
 
 function App() {
   useEffect(() => {
-    console.log('store: ', store.getState());
     const { token, user } = store.getState().userState;
     if (token && !user) {
       api.defaults.headers.common.Authorization = `Bearer ${token}`;
       api.get('/v1/user').then(({ data }) => {
         store.dispatch(setUser(data));
-        console.log('just updated store with user', data);
       });
     }
   });
@@ -30,9 +29,9 @@ function App() {
   return (
     <Provider store={store}>
       <Router>
-        {/* <Route path="/" component={MainPage} /> */}
+        <Route exact path="/" component={LoginPage} />
         <Route path="/login" component={LoginPage} />
-        {/* <Route path="/dashboard" component={UserPage} /> */}
+        <Route path="/register" component={RegisterPage} />
         <PrivateRoute path="/dashboard" Component={UserPage} />
       </Router>
     </Provider>

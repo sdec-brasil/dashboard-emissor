@@ -1,17 +1,12 @@
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
-import { Redirect } from 'react-router-dom';
-import Cookies from 'universal-cookie';
+import { Redirect, withRouter } from 'react-router-dom';
 import {
   UikFormInputGroup, UikButton, UikInput, UikWidget,
   UikContainerHorizontal, UikContainerVertical, UikNavTitle,
 } from '../../@uik';
-import { setToken, setUser } from '../../reducers/userState';
-import api from '../../utils/api';
-import store from '../../store';
+import { login } from '../../utils/api';
 
-
-const cookies = new Cookies();
 
 const widgetStyle = {
   margin: 0,
@@ -22,35 +17,27 @@ const widgetStyle = {
   padding: '25px',
 };
 
-const LoginPage = (props) => {
+const LoginPage = withRouter((props) => {
   const [loading, setLoading] = useState(false);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
 
-  const { from } = props.location.state || { from: { pathname: '/' } };
+  const { from } = props.location.state || { from: { pathname: '/dashboard' } };
 
   const isAuthenticated = useSelector(state => state.userState.token);
 
   const logIn = () => {
     setLoading(true);
-    api.post('/login', { username, password })
-      .then((response) => {
-        // logged in!
-        const { token } = response.data;
-        store.dispatch(setToken(token));
-        api.defaults.headers.common.Authorization = `Bearer ${token}`;
-        cookies.set('token', token);
-
-        // get user info
-        return api.get('/v1/user').then((userInfo) => {
-          store.dispatch(setUser(userInfo));
-        });
-      })
+    login({ username, password })
       .catch((error) => {
         setLoading(false);
         console.error(error);
       });
+  };
+
+  const redirect = url => () => {
+    props.history.push(url);
   };
 
   if (isAuthenticated) return <Redirect to={from} />;
@@ -81,7 +68,7 @@ const LoginPage = (props) => {
           Não tem uma conta?
           </UikNavTitle>
           <UikContainerVertical>
-            <UikButton success>
+            <UikButton success onClick={redirect('/register')}>
           Cadastrar-se
             </UikButton>
           </UikContainerVertical>
@@ -89,6 +76,6 @@ const LoginPage = (props) => {
       </UikContainerHorizontal>
     </UikWidget>
   );
-};
+});
 
 export default LoginPage;
