@@ -1,20 +1,25 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { setWidget } from '../../reducers/mainState';
 import {
   UikNavPanel, UikNavSection, UikNavTitle, UikNavSectionTitle, UikNavLink,
 } from '../../@uik';
 
 const SidePanel = (props) => {
-  const currentSidePanelPage = useSelector(state => state.mainState.currentSidePanelPage);
+  const dispatch = useDispatch();
+  const selectedWidget = useSelector(state => state.mainState.selectedWidget);
 
   return (
-    <UikNavPanel style={{ height: '-webkit-fill-available' }}>
+    <UikNavPanel>
       <UikNavTitle>SDEC Emissor de Notas</UikNavTitle>
       <UikNavSection>
         <UikNavSectionTitle>Menu</UikNavSectionTitle>
-        <UikNavLink className={currentSidePanelPage === 'empresas' ? 'active' : ''}> Empresas </UikNavLink>
-        <UikNavLink className={currentSidePanelPage === 'notasFiscais' ? 'active' : ''}> Notas Fiscais </UikNavLink>
-        <UikNavLink className={currentSidePanelPage === 'notasDePagamentos' ? 'active' : ''}> Notas de Pagamentos </UikNavLink>
+        <UikNavLink className={selectedWidget === 'empresas' ? 'active' : ''}
+          onClick={() => dispatch(setWidget('empresas'))}> Empresas </UikNavLink>
+        <UikNavLink className={selectedWidget === 'notasFiscais' ? 'active' : ''}
+          onClick={() => dispatch(setWidget('notasFiscais'))}> Notas Fiscais </UikNavLink>
+        <UikNavLink className={selectedWidget === 'notasDePagamento' ? 'active' : ''}
+          onClick={() => dispatch(setWidget('notasDePagamento'))}> Notas de Pagamentos </UikNavLink>
       </UikNavSection>
       <UikNavSection>
         <UikNavSectionTitle>Suporte</UikNavSectionTitle>

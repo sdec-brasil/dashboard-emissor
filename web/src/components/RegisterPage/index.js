@@ -16,7 +16,7 @@ const RegisterPage = withRouter(({ history }) => {
     register({ username, password, name })
       .then(() => {
         setLoading(false);
-        history.push('/dashboard');
+        history.push('/admin');
       })
       .catch((error) => {
         setLoading(false);

@@ -21,10 +21,6 @@ export const setToken = token => ({
 
 const userStateReducer = (state = initialState, action) => {
   switch (action.type) {
-    case 'algo': {
-      return { ...state };
-    }
-
     case 'SET_USER': {
       return { ...state, user: action.user };
     }

@@ -32,7 +32,7 @@ function App() {
         <Route exact path="/" component={LoginPage} />
         <Route path="/login" component={LoginPage} />
         <Route path="/register" component={RegisterPage} />
-        <PrivateRoute path="/dashboard" Component={UserPage} />
+        <PrivateRoute path="/admin" Component={UserPage} />
       </Router>
     </Provider>
   );

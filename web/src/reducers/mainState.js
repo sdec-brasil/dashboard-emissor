@@ -1,12 +1,16 @@
 const initialState = {
-  isAuthenticated: false,
+  selectedWidget: 'empresas',
 };
 
+export const setWidget = selectedWidget => ({
+  type: 'SET_WIDGET',
+  selectedWidget,
+});
 
 const mainStateReducer = (state = initialState, action) => {
   switch (action.type) {
-    case 'algo': {
-      return { ...state };
+    case 'SET_WIDGET': {
+      return { ...state, selectedWidget: action.selectedWidget };
     }
 
     case 'loggedIn': {

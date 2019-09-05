@@ -1,21 +1,12 @@
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
-import { Redirect, withRouter } from 'react-router-dom';
+import { Redirect, withRouter, Link } from 'react-router-dom';
 import {
   UikFormInputGroup, UikButton, UikInput, UikWidget,
   UikContainerHorizontal, UikContainerVertical, UikNavTitle,
 } from '../../@uik';
 import { login } from '../../utils/api';
-
-
-const widgetStyle = {
-  margin: 0,
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  padding: '25px',
-};
+import './style.scss';
 
 const LoginPage = withRouter((props) => {
   const [loading, setLoading] = useState(false);
@@ -23,7 +14,7 @@ const LoginPage = withRouter((props) => {
   const [password, setPassword] = useState('');
 
 
-  const { from } = props.location.state || { from: { pathname: '/dashboard' } };
+  const { from } = props.location.state || { from: { pathname: '/admin' } };
 
   const isAuthenticated = useSelector(state => state.userState.token);
 
@@ -36,14 +27,10 @@ const LoginPage = withRouter((props) => {
       });
   };
 
-  const redirect = url => () => {
-    props.history.push(url);
-  };
-
   if (isAuthenticated) return <Redirect to={from} />;
 
   return (
-    <UikWidget style={widgetStyle}>
+    <UikWidget className="loginPage">
       <UikContainerHorizontal>
         <div>
           <UikFormInputGroup>
@@ -68,7 +55,7 @@ const LoginPage = withRouter((props) => {
           Não tem uma conta?
           </UikNavTitle>
           <UikContainerVertical>
-            <UikButton success onClick={redirect('/register')}>
+            <UikButton success Component={Link} to="/register">
           Cadastrar-se
             </UikButton>
           </UikContainerVertical>

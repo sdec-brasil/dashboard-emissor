@@ -1,17 +1,22 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import Cookies from 'universal-cookie';
 import store from '../../store';
 import { setToken, setUser } from '../../reducers/userState';
 import SidePanel from '../SidePanel';
-import { UikContainerHorizontal, UikWidget } from '../../@uik';
+import { UikContainerHorizontal } from '../../@uik';
+import './style.scss';
+import Empresas from '../EmpresasWidget';
+import NotasFiscais from '../NotasFiscaisWidget';
+import NotasDePagamento from '../NotasDePagamentoWidget';
+
 
 const cookies = new Cookies();
 
 
 const UserPage = withRouter(({ history }) => {
-  const fillHeight = { height: '-webkit-fill-available' };
-
+  const selectedWidget = useSelector(state => state.mainState.selectedWidget);
   const logout = () => {
     store.dispatch(setUser(null));
     cookies.remove('token');
@@ -19,17 +24,33 @@ const UserPage = withRouter(({ history }) => {
     history.push('/');
   };
 
+  let widget = null;
+
+  switch (selectedWidget) {
+    case 'empresas': {
+      widget = (<Empresas />);
+      break;
+    }
+    case 'notasFiscais': {
+      widget = (<NotasFiscais />);
+      break;
+    }
+    case 'notasDePagamento': {
+      widget = (<NotasDePagamento />);
+      break;
+    }
+    default: {
+      widget = (<Empresas />);
+    }
+  }
+
   return (
-    <div>
-      <UikContainerHorizontal style={fillHeight}>
-        <SidePanel logout={logout} />
-        <UikWidget padding>
-          <h2>
-            This is a widget
-          </h2>
-        </UikWidget>
-      </UikContainerHorizontal>
-    </div>
+    <UikContainerHorizontal>
+      <SidePanel logout={logout} />
+      <div className='admin-content'>
+        {widget}
+      </div>
+    </UikContainerHorizontal>
   );
 });
 
