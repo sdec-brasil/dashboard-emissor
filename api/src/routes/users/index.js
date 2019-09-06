@@ -31,4 +31,11 @@ export default {
       passport.authenticate('jwt', { session: false }),
     ],
   },
+
+  'GET /user/free-addresses': {
+    path: 'Users.getFreeAddresses',
+    middlewares: [
+      passport.authenticate('jwt', { session: false }),
+    ],
+  },
 };

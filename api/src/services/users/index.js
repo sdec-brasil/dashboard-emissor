@@ -88,9 +88,25 @@ const registerNewAddress = async (req) => {
     });
 };
 
+
+const getFreeAddresses = async req => models.address.findAll({
+  raw: true,
+  where: {
+    walletId: req.user.walletId,
+  },
+})
+  .then((addresses) => {
+    const data = { data: addresses };
+    return { code: 200, data };
+  })
+  .catch((err) => {
+    throw err;
+  });
+
 export default {
   getUserInfo,
   updateUser,
   createNewUser,
   registerNewAddress,
+  getFreeAddresses,
 };
