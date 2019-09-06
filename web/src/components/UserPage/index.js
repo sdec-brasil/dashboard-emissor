@@ -11,9 +11,7 @@ import Empresas from '../EmpresasWidget';
 import NotasFiscais from '../NotasFiscaisWidget';
 import NotasDePagamento from '../NotasDePagamentoWidget';
 
-
 const cookies = new Cookies();
-
 
 const UserPage = withRouter(({ history }) => {
   const selectedWidget = useSelector(state => state.mainState.selectedWidget);
