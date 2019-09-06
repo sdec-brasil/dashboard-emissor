@@ -3,7 +3,7 @@ import { withRouter } from 'react-router-dom';
 import {
   UikFormInputGroup, UikButton, UikInput, UikWidget,
 } from '../../@uik';
-import { register } from '../../utils/api';
+import { register } from '../../utils/auth';
 
 const RegisterPage = withRouter(({ history }) => {
   const [loading, setLoading] = useState(false);

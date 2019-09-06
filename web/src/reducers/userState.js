@@ -1,11 +1,5 @@
-import Cookies from 'universal-cookie';
-
-const cookies = new Cookies();
-
-
 const initialState = {
   user: undefined,
-  token: cookies.get('token'),
 };
 
 export const setUser = user => ({

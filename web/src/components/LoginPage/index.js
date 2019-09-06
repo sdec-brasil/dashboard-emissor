@@ -5,7 +5,7 @@ import {
   UikFormInputGroup, UikButton, UikInput, UikWidget,
   UikContainerHorizontal, UikContainerVertical, UikNavTitle,
 } from '../../@uik';
-import { login } from '../../utils/api';
+import { login } from '../../utils/auth';
 import './style.scss';
 
 const LoginPage = withRouter((props) => {
