@@ -15,7 +15,7 @@ const EmpresasWidget = () => {
       ['email', 'email'],
     ],
     endpoint: '/v1/companies',
-    title: 'Empresa',
+    title: 'Empresas',
     keyField: 'enderecoBlockchain',
     buttonText: 'Nova Empresa',
     onClickAdd: () => console.log('valeu'),

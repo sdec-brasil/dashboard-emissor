@@ -1,3 +1,10 @@
 .widget-wrapper {
-    // margin: 25px;
+    .empty-message {
+        margin-top: 5px;
+        margin-bottom: 5px;
+        color: rgb(165, 165, 165)
+    }
+    .content-wrapper {
+        overflow: auto;
+    }
 }

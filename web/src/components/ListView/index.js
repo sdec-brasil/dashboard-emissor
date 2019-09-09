@@ -55,6 +55,23 @@ const ListView = (props) => {
     </tr>
   ));
 
+  const empty = () => (
+    <div className='empty-message'>
+      {`Ainda não há ${title.toLowerCase()} cadastrados(as)`}
+    </div>);
+
+  const table = () => (
+    <UikWidgetTable>
+      <thead>
+        <tr>
+          {h()}
+        </tr>
+      </thead>
+      <tbody>
+        {rows()}
+      </tbody>
+    </UikWidgetTable>
+  );
 
   return (
     <>
@@ -68,17 +85,8 @@ const ListView = (props) => {
   >
           {title}
         </UikWidgetHeader>
-        <UikWidgetContent>
-          <UikWidgetTable>
-            <thead>
-              <tr>
-                {h()}
-              </tr>
-            </thead>
-            <tbody>
-              {rows()}
-            </tbody>
-          </UikWidgetTable>
+        <UikWidgetContent className='content-wrapper'>
+          {tableData.length ? table() : empty()}
         </UikWidgetContent>
       </UikWidget>
     </>

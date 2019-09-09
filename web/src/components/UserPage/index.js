@@ -5,7 +5,7 @@ import Cookies from 'universal-cookie';
 import store from '../../store';
 import { setToken, setUser } from '../../reducers/userState';
 import SidePanel from '../SidePanel';
-import { UikContainerHorizontal } from '../../@uik';
+import { UikContainerHorizontal, UikContainerVertical } from '../../@uik';
 import './style.scss';
 import Empresas from '../EmpresasWidget';
 import NotasFiscais from '../NotasFiscaisWidget';
@@ -45,9 +45,12 @@ const UserPage = withRouter(({ history }) => {
   return (
     <UikContainerHorizontal>
       <SidePanel logout={logout} />
-      <div className='admin-content'>
+      {/* <div className='admin-content'>
         {widget}
-      </div>
+      </div> */}
+      <UikContainerVertical className='admin-content'>
+        {widget}
+      </UikContainerVertical>
     </UikContainerHorizontal>
   );
 });
