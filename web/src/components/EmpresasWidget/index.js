@@ -1,5 +1,6 @@
 import React from 'react';
 import ListView from '../ListView';
+import api from '../../utils/api';
 import './style.scss';
 
 
@@ -31,7 +32,9 @@ const EmpresasWidget = () => {
     title: 'Endereços',
     keyField: 'address',
     buttonText: 'Novo Endereço',
-    onClickAdd: () => console.log('new address requested'),
+    onClickAdd: () => api.post('/v1/user/new-address').then((response) => {
+      console.log(`generated new address ${response.data.address}`);
+    }),
   };
 
   return (

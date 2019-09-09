@@ -11,16 +11,22 @@ const ListView = (props) => {
   const [tableData, setTableData] = useState([]);
   const {
     headers, endpoint, title, keyField,
-    buttonText, onClickAdd,
+    buttonText, onClickAdd, storeSetter,
+    storeGetter,
   } = props;
 
+  async function loadFromServer() {
+    const c = await api.get(endpoint);
+    console.log(`Just got ${title}`, c.data.data);
+    setTableData(c.data.data);
+  }
+
+  const onClick = async () => {
+    await onClickAdd();
+    loadFromServer();
+  };
 
   useEffect(() => {
-    async function loadFromServer() {
-      const c = await api.get(endpoint);
-      console.log(`Just got ${title}`, c.data.data);
-      setTableData(c.data.data);
-    }
     loadFromServer();
   }, []);
 
@@ -55,7 +61,7 @@ const ListView = (props) => {
       <UikWidget className='widget-wrapper'>
         <UikWidgetHeader
           rightEl={(
-            <UikButton primary onClick={onClickAdd}>
+            <UikButton primary onClick={onClick}>
               {buttonText}
             </UikButton>
     )}

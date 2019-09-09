@@ -94,6 +94,7 @@ const getFreeAddresses = async req => models.address.findAll({
   where: {
     walletId: req.user.walletId,
   },
+  order: [['createdAt', 'DESC']],
 })
   .then((addresses) => {
     const data = { data: addresses };
