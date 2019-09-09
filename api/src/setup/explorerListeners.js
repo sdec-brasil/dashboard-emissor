@@ -6,7 +6,8 @@ import models from '../models';
 export default function () {
   console.log('SETUP - Setting explorer listeners...');
 
-  const companiesStream = new EventSource('http://159.89.86.197:8000/v1/events/emitters');
+  const explorerUrl = process.env.EXPLORER_URL || 'http://159.89.86.197:8000';
+  const companiesStream = new EventSource(`${explorerUrl}/v1/events/emitters`);
   companiesStream.addEventListener('emitter:new', async (e) => {
     console.log(`companiesStream: ${e.type} - ${e.data}`);
 
@@ -29,7 +30,7 @@ export default function () {
         // company we dont have this company or new company
 
         // get data from public worker
-        const response = await axios.get(`http://159.89.86.197:8000/v1/companies/${company.get('cnpj')}`);
+        const response = await axios.get(`${explorerUrl}/v1/companies/${company.get('cnpj')}`);
 
         // create company
         company = await models.empresa.create({
@@ -47,7 +48,7 @@ export default function () {
     // We will just ignore this new address authorization.
   });
 
-  const invoicesStream = new EventSource('http://159.89.86.197:8000/v1/events/invoices');
+  const invoicesStream = new EventSource(`${explorerUrl}/v1/events/invoices`);
   invoicesStream.addEventListener('invoice:new', (e) => {
     console.log(`invoicesStream: ${e.type} - ${e.data}`);
   });
