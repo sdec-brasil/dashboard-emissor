@@ -4,7 +4,7 @@ import jwt from 'jsonwebtoken';
 import uuid from 'uuid/v4';
 import { jwtOptions } from '../../config/config';
 
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 
 export const hashPassword = (password, salt) => bcrypt.hashSync(password, salt);
 export const comparePassword = (password, hash) => bcrypt.compareSync(password, hash);
