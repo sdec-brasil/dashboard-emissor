@@ -11,8 +11,7 @@ const ListView = (props) => {
   const [tableData, setTableData] = useState([]);
   const {
     headers, endpoint, title, keyField,
-    buttonText, onClickAdd, storeSetter,
-    storeGetter,
+    buttonText, onClickAdd,
   } = props;
 
   async function loadFromServer() {
@@ -77,11 +76,11 @@ const ListView = (props) => {
     <>
       <UikWidget className='widget-wrapper'>
         <UikWidgetHeader
-          rightEl={(
+          rightEl={buttonText && (
             <UikButton primary onClick={onClick}>
               {buttonText}
             </UikButton>
-    )}
+          )}
   >
           {title}
         </UikWidgetHeader>
