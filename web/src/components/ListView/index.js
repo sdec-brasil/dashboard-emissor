@@ -4,6 +4,7 @@ import {
   UikWidgetTable,
 } from '../../@uik';
 import api from '../../utils/api';
+import * as cleaners from '../../utils/cleaners';
 import './style.scss';
 
 
@@ -13,21 +14,6 @@ const ListView = (props) => {
     headers, endpoint, title, keyField,
     buttonText, onClickAdd,
   } = props;
-
-  async function loadFromServer() {
-    const c = await api.get(endpoint);
-    console.log(`Just got ${title}`, c.data.data);
-    setTableData(c.data.data);
-  }
-
-  const onClick = async () => {
-    await onClickAdd();
-    loadFromServer();
-  };
-
-  useEffect(() => {
-    loadFromServer();
-  }, []);
 
   const getColumnTitle = (header) => {
     if (Array.isArray(header)) {
@@ -43,6 +29,44 @@ const ListView = (props) => {
     }
     return header;
   };
+
+  const getCleanerFunction = (header) => {
+    if (Array.isArray(header) && header.length > 2) {
+      if (header[2] instanceof Function) {
+        return header[2];
+      }
+      if (header[2] === 'date') {
+        return cleaners.date;
+      }
+    }
+    return (value => value);
+  };
+
+  const cleanData = (data) => {
+    data.forEach((row) => {
+      headers.forEach((header) => {
+        const f = getCleanerFunction(header);
+        row[getColumnField(header)] = f(row[getColumnField(header)]);
+      });
+    });
+  };
+
+  async function loadFromServer() {
+    const c = await api.get(endpoint);
+    console.log(`Just got ${title}`, c.data.data);
+    cleanData(c.data.data);
+    console.log(`Just cleaned ${title}`, c.data.data);
+    setTableData(c.data.data);
+  }
+
+  const onClick = async () => {
+    await onClickAdd();
+    loadFromServer();
+  };
+
+  useEffect(() => {
+    loadFromServer();
+  }, []);
 
   const h = () => headers.map(header => <th
     key={getColumnField(header)}>{getColumnTitle(header)}</th>);

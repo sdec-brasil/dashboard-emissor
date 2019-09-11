@@ -17,16 +17,14 @@ const EmpresasWidget = () => {
     endpoint: '/v1/companies',
     title: 'Empresas',
     keyField: 'enderecoBlockchain',
-    buttonText: 'Nova Empresa',
-    onClickAdd: () => console.log('valeu'),
   };
 
   const addressProps = {
     headers: [
       ['address', 'Endereco'],
       ['privateKey', 'Privado'],
-      ['publicKey', 'Publico'],
-      ['createdAt', 'Criado em'],
+      ['publicKey', 'Publico', value => value.toUpperCase()],
+      ['createdAt', 'Criado em', 'date'],
     ],
     endpoint: '/v1/user/free-addresses',
     title: 'Endereços',
