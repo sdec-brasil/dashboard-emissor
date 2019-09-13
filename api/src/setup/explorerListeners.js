@@ -10,8 +10,8 @@ export default function () {
   const companiesStream = new EventSource(`${explorerUrl}/v1/events/emitters`);
   companiesStream.addEventListener('emitter:new', async (e) => {
     console.log(`companiesStream: ${e.type} - ${e.data}`);
-
-    const [cnpj, address, txid] = e.data.split('|');
+    const data = e.data.replace('"', '');
+    const [taxNumber, address, txid] = data.split('|');
     const addrInstance = await models.address.findByPk(address);
     if (addrInstance !== null) {
       console.log('Found an address that belongs to us!');
@@ -23,24 +23,22 @@ export default function () {
         throw new Error(`AddressInstance ${addrInstance.get('address')} is not in the wallet of any user.
         (walletId = ${addrInstance.get('walletId')})`);
       }
-      let company = await models.empresa.findOne(
-        { where: { cnpj } },
-      );
+      let company = await models.empresa.findByPk(taxNumber);
       if (company === null) {
-        // company we dont have this company or new company
+        // we dont have this company or new company
 
-        // get data from public worker
-        const response = await axios.get(`${explorerUrl}/v1/companies/${company.get('cnpj')}`);
-
+        // get data from public api explorer
+        const response = await axios.get(`${explorerUrl}/v1/companies/${taxNumber}`);
         // create company
+        console.log(response.data);
         company = await models.empresa.create({
-          ...response,
+          ...response.data,
           user_id: user.get('id'),
         });
         // change addrInstance wallet to the wallet of the company
         await addrInstance.update({ walletId: company.get('walletId') });
         console.log(`Address ${addrInstance.get('address')} now belongs to company 
-          ${company.get('nomeFantasia')}.`);
+          ${company.get('name')}.`);
       }
     }
     // if we already have this company created,
