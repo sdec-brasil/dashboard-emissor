@@ -16,7 +16,7 @@ const EmpresasWidget = () => {
     ],
     endpoint: '/v1/companies',
     title: 'Empresas',
-    keyField: 'enderecoBlockchain',
+    keyField: 'endBlock',
   };
 
   const addressProps = {

@@ -1,9 +1,10 @@
 // tooling modules
 import axios from 'axios';
+import { BACKEND_URL } from './settings';
 
 // configuration
 const api = axios.create({
-  baseURL: process.env.REACT_APP_BACKEND,
+  baseURL: BACKEND_URL,
   headers: {
     'Content-Type': 'application/json',
   },
