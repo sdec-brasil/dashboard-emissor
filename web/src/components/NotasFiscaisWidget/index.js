@@ -1,10 +1,11 @@
 import React from 'react';
+import { withRouter } from 'react-router-dom';
 import ListView from '../ListView';
 import api from '../../utils/api';
 import './style.scss';
 
 
-const NotasFiscaisWidget = () => {
+const NotasFiscaisWidget = withRouter(({ history }) => {
   const notasFicaisProps = {
     headers: [
       ['address', 'Endereco'],
@@ -16,14 +17,15 @@ const NotasFiscaisWidget = () => {
     title: 'Notas Fiscais',
     keyField: 'nonce',
     buttonText: 'Nova Nota Fiscal',
-    onClickAdd: () => api.post('/v1/invoices').then((response) => {
-      console.log(`nova nota registrada ${response.data.address}`);
+    onClickAdd: () => new Promise((resolve) => {
+      history.push('/new-invoice');
+      resolve(true);
     }),
   };
 
   return (
     <ListView {...notasFicaisProps} />
   );
-};
+});
 
 export default NotasFiscaisWidget;

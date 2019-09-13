@@ -11,6 +11,7 @@ import PrivateRoute from './components/PrivateRoute';
 import LoginPage from './components/LoginPage';
 import UserPage from './components/UserPage';
 import RegisterPage from './components/RegisterPage';
+import AddNotaFiscal from './components/AddNotaFiscal';
 import './@uik/styles.css';
 
 function App() {
@@ -45,6 +46,7 @@ function App() {
             <Route path="/login" component={LoginPage} />
             <Route path="/register" component={RegisterPage} />
             <PrivateRoute path="/admin" Component={UserPage} />
+            <PrivateRoute path="/new-invoice" Component={AddNotaFiscal} />
           </Router>
         )}
     </Provider>
