@@ -1,11 +1,14 @@
 import React from 'react';
+import { useDispatch } from 'react-redux';
 import { withRouter } from 'react-router-dom';
+import { setWidget } from '../../reducers/mainState';
 import ListView from '../ListView';
-import api from '../../utils/api';
 import './style.scss';
 
 
 const NotasFiscaisWidget = withRouter(({ history }) => {
+  const dispatch = useDispatch();
+  dispatch(setWidget('NotasFicaisWidget'));
   const notasFicaisProps = {
     headers: [
       ['address', 'Endereco'],

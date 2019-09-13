@@ -1,12 +1,18 @@
 import React from 'react';
+import { useDispatch } from 'react-redux';
 import { UikWidget } from '../../@uik';
+import { setWidget } from '../../reducers/mainState';
 import './style.scss';
 
 
-const NotasDePagamentoWidget = () => (
-  <UikWidget>
+const NotasDePagamentoWidget = () => {
+  const dispatch = useDispatch();
+  dispatch(setWidget('NotasDePagamentoWidget'));
+  return (
+    <UikWidget>
     Notas de Pagamento
-  </UikWidget>
-);
+    </UikWidget>
+  );
+};
 
 export default NotasDePagamentoWidget;

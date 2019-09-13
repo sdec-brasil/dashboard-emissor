@@ -1,10 +1,14 @@
 import React from 'react';
+import { useDispatch } from 'react-redux';
 import ListView from '../ListView';
 import api from '../../utils/api';
+import { setWidget } from '../../reducers/mainState';
 import './style.scss';
 
 
 const EmpresasWidget = () => {
+  const dispatch = useDispatch();
+  dispatch(setWidget('EmpresasWidget'));
   const companyProps = {
     headers: [
       ['endBlock'],

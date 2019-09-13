@@ -1,25 +1,29 @@
 import React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { setWidget } from '../../reducers/mainState';
+import { withRouter } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import {
   UikNavPanel, UikNavSection, UikNavTitle, UikNavSectionTitle, UikNavLink,
 } from '../../@uik';
 
-const SidePanel = (props) => {
-  const dispatch = useDispatch();
+const SidePanel = withRouter((props) => {
+  const { history, match } = props;
   const selectedWidget = useSelector(state => state.mainState.selectedWidget);
+
+  const pushTo = (path) => {
+    history.push(`${match.path}${path}`);
+  };
 
   return (
     <UikNavPanel>
       <UikNavTitle>SDEC Emissor de Notas</UikNavTitle>
       <UikNavSection>
         <UikNavSectionTitle>Menu</UikNavSectionTitle>
-        <UikNavLink className={selectedWidget === 'empresas' ? 'active' : ''}
-          onClick={() => dispatch(setWidget('empresas'))}> Empresas </UikNavLink>
-        <UikNavLink className={selectedWidget === 'notasFiscais' ? 'active' : ''}
-          onClick={() => dispatch(setWidget('notasFiscais'))}> Notas Fiscais </UikNavLink>
-        <UikNavLink className={selectedWidget === 'notasDePagamento' ? 'active' : ''}
-          onClick={() => dispatch(setWidget('notasDePagamento'))}> Notas de Pagamentos </UikNavLink>
+        <UikNavLink className={selectedWidget === 'EmpresasWidget' ? 'active' : ''}
+          onClick={() => pushTo('/empresas')}> Empresas </UikNavLink>
+        <UikNavLink className={selectedWidget === 'NotasFicaisWidget' ? 'active' : ''}
+          onClick={() => pushTo('/notas-fiscais')}> Notas Fiscais </UikNavLink>
+        <UikNavLink className={selectedWidget === 'NotasDePagamentoWidget' ? 'active' : ''}
+          onClick={() => pushTo('/notas-de-pagamento')}> Notas de Pagamentos </UikNavLink>
       </UikNavSection>
       <UikNavSection>
         <UikNavSectionTitle>Suporte</UikNavSectionTitle>
@@ -30,6 +34,6 @@ const SidePanel = (props) => {
       </UikNavSection>
     </UikNavPanel>
   );
-};
+});
 
 export default SidePanel;

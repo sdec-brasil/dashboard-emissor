@@ -6,6 +6,7 @@ const PrivateRoute = ({ Component, ...rest }) => {
   if (!Component) throw new Error('No component passed to private route');
 
   const isAuthenticated = useSelector(state => state.userState.token);
+  console.log('isAuthenticated', !!isAuthenticated);
   return <Route {...rest} render={
       props => (
         isAuthenticated

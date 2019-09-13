@@ -4,6 +4,7 @@ import {
   UikFormInputGroup, UikButton, UikInput, UikWidget,
 } from '../../@uik';
 import { register } from '../../utils/auth';
+import { HOMEPAGE_PATH } from '../../utils/settings';
 
 const RegisterPage = withRouter(({ history }) => {
   const [loading, setLoading] = useState(false);
@@ -16,7 +17,7 @@ const RegisterPage = withRouter(({ history }) => {
     register({ username, password, name })
       .then(() => {
         setLoading(false);
-        history.push('/admin');
+        history.push(HOMEPAGE_PATH);
       })
       .catch((error) => {
         setLoading(false);

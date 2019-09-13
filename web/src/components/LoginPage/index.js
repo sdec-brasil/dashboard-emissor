@@ -6,6 +6,7 @@ import {
   UikContainerHorizontal, UikContainerVertical, UikNavTitle,
 } from '../../@uik';
 import { login } from '../../utils/auth';
+import { HOMEPAGE_PATH } from '../../utils/settings';
 import './style.scss';
 
 const LoginPage = withRouter((props) => {
@@ -14,7 +15,7 @@ const LoginPage = withRouter((props) => {
   const [password, setPassword] = useState('');
 
 
-  const { from } = props.location.state || { from: { pathname: '/admin' } };
+  const { from } = props.location.state || { from: { pathname: HOMEPAGE_PATH } };
 
   const isAuthenticated = useSelector(state => state.userState.token);
 
