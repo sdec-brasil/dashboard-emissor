@@ -41,43 +41,28 @@ const listCompanies = async (req) => {
 const getCompany = async req =>
   // search by cnpj
   models.empresa.findByPk(req.params.id)
-    .then((companyByCnpj) => {
-      if (companyByCnpj) {
-        return { code: 200, data: companyByCnpj };
+    .then((companyByTaxNumber) => {
+      if (companyByTaxNumber) {
+        return { code: 200, data: companyByTaxNumber };
       }
       // search by public address
       return models.empresa.findOne({
-        where: { enderecoBlockchain: req.params.id },
+        where: { endBlock: req.params.id },
       })
         .then((companyByAddress) => {
           if (companyByAddress) {
             return { code: 200, data: companyByAddress };
           }
-          throw new errors.NotFoundError('Company', `CNPJ or blockchainAddress ${req.params.id}`);
+          throw new errors.NotFoundError('Company', `taxNumber or endBlock ${req.params.id}`);
         });
     });
 
 
 const postCompany = async (req) => {
-  const companyInfo = {
-    cnpj: req.body.cnpj,
-    razao: req.body.razaoSocial,
-    fantasia: req.body.nomeFantasia,
-    logEnd: req.body.enderecoEmpresa,
-    numEnd: req.body.numeroEndereco,
-    compEnd: req.body.complementoEndereco,
-    bairroEnd: req.body.bairroEndereco,
-    cidadeEnd: req.body.cidadeEndereco,
-    estadoEnd: req.body.unidadeFederacao,
-    paisEnd: req.body.paisEndereco,
-    cepEnd: req.body.cep,
-    email: req.body.email,
-    tel: req.body.telefone,
-  };
   // chain.registerEnterprise(companyInfo);
   await models.empresa.create({
-    ...companyInfo,
-    enderecoBlockchain: req.body.enderecoBlockchain,
+    ...req.body,
+    endBlock: req.body.endBlock,
     user_id: req.body.user_id,
   });
   return { code: 201, data: 'created' };

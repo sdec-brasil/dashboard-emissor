@@ -335,7 +335,7 @@ async function generateInvoices(n) {
     const prefeituras = await models.prefeitura.findAll();
     prefeiturasCod = prefeituras.map(x => x.codigoMunicipio);
     const empresas = await models.empresa.findAll();
-    empresasEnd = empresas.map(x => x.enderecoBlockchain);
+    empresasEnd = empresas.map(x => x.endBlock);
 
     const invoices = [];
     for (let i = 0; i < n; i += 1) {

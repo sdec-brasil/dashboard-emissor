@@ -22,7 +22,7 @@ export default function (sequelize, DataTypes) {
 
   partialInvoice.associate = (models) => {
     partialInvoice.belongsTo(models.empresa, {
-      targetKey: 'enderecoBlockchain',
+      targetKey: 'endBlock',
       foreignKey: { name: 'enderecoEmissor', allowNull: false },
     });
   };

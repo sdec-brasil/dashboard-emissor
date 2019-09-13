@@ -85,7 +85,7 @@ const postInvoice = async (req) => {
 
 
   const empresa = await models.empresa.findByPk(user.empresaCnpj, { raw: true });
-  invoiceInfo.enderecoEmissor = empresa.enderecoBlockchain;
+  invoiceInfo.enderecoEmissor = empresa.endBlock;
 
   const lastBlock = await models.block.findOne({ raw: true });
   invoiceInfo.blocoConfirmacaoId = lastBlock.block_id;
@@ -114,10 +114,10 @@ const replaceInvoice = async (req) => {
   const invoiceInfo = serializers.invoice.deserialize(req.body);
 
   const empresa = await models.empresa.findByPk(user.empresaCnpj, { raw: true });
-  if (oldInvoice.enderecoEmissor !== empresa.enderecoBlockchain) {
+  if (oldInvoice.enderecoEmissor !== empresa.endBlock) {
     throw new errors.AuthorizationError('A invoice que se quer alterar não foi emitida pela sua empresa.');
   }
-  invoiceInfo.enderecoEmissor = empresa.enderecoBlockchain;
+  invoiceInfo.enderecoEmissor = empresa.endBlock;
 
   const lastBlock = await models.block.findOne({ raw: true });
   invoiceInfo.blocoConfirmacaoId = lastBlock.block_id;

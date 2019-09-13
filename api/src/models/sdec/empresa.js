@@ -3,65 +3,69 @@ import models from '../index';
 // Empresa
 export default function (sequelize, DataTypes) {
   const empresa = sequelize.define('empresa', {
-    enderecoBlockchain: {
-      type: DataTypes.STRING(45),
-      unique: true,
+    taxNumber: {
+      type: DataTypes.STRING(14),
       primaryKey: true,
+      unique: true,
       allowNull: false,
     },
-    cnpj: {
-      type: DataTypes.STRING(14),
-      unique: true,
-      allowNull: true,
-    },
-    razaoSocial: {
+    name: {
       type: DataTypes.STRING(150),
       unique: true,
-      allowNull: true,
+      allowNull: false,
     },
-    nomeFantasia: {
+    tradeName: {
       type: DataTypes.STRING(60),
       allowNull: true,
     },
-    enderecoEmpresa: {
-      type: DataTypes.STRING(125),
-      allowNull: true,
-    },
-    numeroEndereco: {
-      type: DataTypes.INTEGER,
-      allowNull: true,
-    },
-    complementoEndereco: {
-      type: DataTypes.STRING(60),
-      allowNull: true,
-    },
-    bairroEndereco: {
-      type: DataTypes.STRING(60),
-      allowNull: true,
-    },
-    cidadeEndereco: {
-      type: DataTypes.STRING(7),
-      allowNull: true,
-    },
-    unidadeFederacao: {
-      type: DataTypes.STRING(2),
-      allowNull: true,
-    },
-    paisEndereco: {
-      type: DataTypes.STRING(4),
-      allowNull: true,
-    },
-    cep: {
+    postalCode: {
       type: DataTypes.STRING(8),
+      allowNull: false,
+    },
+    street: {
+      type: DataTypes.STRING(125),
+      allowNull: false,
+    },
+    number: {
+      type: DataTypes.STRING(10),
+      allowNull: false,
+    },
+    additionalInformation: {
+      type: DataTypes.STRING(60),
       allowNull: true,
+    },
+    district: {
+      type: DataTypes.STRING(60),
+      allowNull: false,
+    },
+    city: {
+      type: DataTypes.STRING(7),
+      allowNull: false,
+    },
+    state: {
+      type: DataTypes.STRING(2),
+      allowNull: false,
+    },
+    taxRegime: {
+      // 1 - MEI;
+      // 2 - Simples Nacional;
+      // 3 - Lucro Presumido;
+      // 4 - Lucro Real;
+      type: DataTypes.TINYINT({ unsigned: true }),
+      allowNull: false,
     },
     email: {
       type: DataTypes.STRING(80),
       allowNull: true,
     },
-    telefone: {
+    phoneNumber: {
       type: DataTypes.STRING(20),
       allowNull: true,
+    },
+    endBlock: {
+      type: DataTypes.STRING,
+      unique: true,
+      allowNull: false,
     },
   },
   {
@@ -70,6 +74,8 @@ export default function (sequelize, DataTypes) {
     freezeTableName: true,
     timestamps: false,
   });
+  // falta pegar a lista de cnaes
+
   empresa.associate = (models) => {
     empresa.belongsTo(models.user, { targetKey: 'id', foreignKey: { name: 'user_id', allowNull: false } });
     empresa.belongsTo(models.wallet, { targetKey: 'id', foreignKey: { name: 'walletId', allowNull: true } });

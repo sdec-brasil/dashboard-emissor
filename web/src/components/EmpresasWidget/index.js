@@ -7,11 +7,11 @@ import './style.scss';
 const EmpresasWidget = () => {
   const companyProps = {
     headers: [
-      ['enderecoBlockchain', 'end blockchain'],
-      ['razaoSocial', 'razao'],
-      ['nomeFantasia', 'nome'],
-      ['cnpj', 'cnpj'],
-      ['cidadeEndereco', 'cidade'],
+      ['endBlock'],
+      ['name', 'razao'],
+      ['tradeName', 'nome'],
+      ['taxNumber', 'CNPJ'],
+      ['district', 'cidade'],
       ['email', 'email'],
     ],
     endpoint: '/v1/companies',

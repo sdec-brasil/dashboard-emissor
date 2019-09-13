@@ -54,7 +54,7 @@ const getSettlementsFromCompany = async (req) => {
   const invoices = await models.invoice.findAll({
     raw: true,
     where: {
-      enderecoEmissor: company.enderecoBlockchain,
+      enderecoEmissor: company.endBlock,
       dataIncidencia,
     },
   });
