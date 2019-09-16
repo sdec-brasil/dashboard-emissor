@@ -13,7 +13,7 @@ export const login = ({ username, password }) => api.post('/login', { username, 
     const { token } = response.data;
     store.dispatch(setToken(token));
     api.defaults.headers.common.Authorization = `Bearer ${token}`;
-    cookies.set('token', token);
+    cookies.set('token', token, { path: '/' });
 
     // get user info
     return api.get('/v1/user').then((userInfo) => {

@@ -21,7 +21,7 @@ const NotasFiscaisWidget = withRouter(({ history }) => {
     keyField: 'nonce',
     buttonText: 'Nova Nota Fiscal',
     onClickAdd: () => new Promise((resolve) => {
-      history.push('/new-invoice');
+      history.push('/admin/notas-fiscais/new');
       resolve(true);
     }),
   };

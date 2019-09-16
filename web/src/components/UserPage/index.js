@@ -9,6 +9,7 @@ import './style.scss';
 import Empresas from '../EmpresasWidget';
 import NotasFiscais from '../NotasFiscaisWidget';
 import NotasDePagamento from '../NotasDePagamentoWidget';
+import AddNotaFiscal from '../AddNotaFiscal';
 import PrivateRoute from '../PrivateRoute';
 
 const cookies = new Cookies();
@@ -16,7 +17,7 @@ const cookies = new Cookies();
 const UserPage = withRouter(({ history, match }) => {
   const logout = () => {
     store.dispatch(setUser(null));
-    cookies.remove('token');
+    cookies.remove('token', { path: '/' });
     store.dispatch(setToken(null));
     history.push('/');
   };
@@ -26,7 +27,8 @@ const UserPage = withRouter(({ history, match }) => {
       <SidePanel logout={logout} />
       <UikContainerVertical className='admin-content'>
         <PrivateRoute path={`${match.url}/empresas`} Component={Empresas} />
-        <PrivateRoute path={`${match.url}/notas-fiscais`} Component={NotasFiscais} />
+        <PrivateRoute exact path={`${match.url}/notas-fiscais`} Component={NotasFiscais} />
+        <PrivateRoute path={`${match.url}/notas-fiscais/new`} Component={AddNotaFiscal} />
         <PrivateRoute path={`${match.url}/notas-de-pagamento`} Component={NotasDePagamento} />
       </UikContainerVertical>
 
