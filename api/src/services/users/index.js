@@ -1,6 +1,8 @@
 import models from '../../models';
 import { errors, requests, chain } from '../../utils';
 
+const { Op } = models.Sequelize;
+
 
 const getUserInfo = async req => models.user.findOne({
   where: {
@@ -76,6 +78,7 @@ const registerNewAddress = async (req) => {
       privateKey: pair.privkey,
       publicKey: pair.pubkey,
       walletId,
+      userId: req.user.id,
     },
   )
     .then(createdAddress => ({
@@ -104,10 +107,38 @@ const getFreeAddresses = async req => models.address.findAll({
     throw err;
   });
 
+const getRegisteredAddresses = async req => models.address.findAll({
+  where: {
+    userId: req.user.id,
+    walletId: {
+      [Op.not]: req.user.walletId,
+    },
+  },
+  order: [['createdAt', 'DESC']],
+})
+  .then((addresses) => {
+    const data = [];
+    const p = addresses.map(addr => new Promise(async (resolve) => {
+      const item = addr.get({ plain: true });
+      const wallet = await addr.getWallet();
+      const company = await models.empresa.findOne({ where: { walletId: wallet.id } });
+      item.company = company;
+      data.push(item);
+      resolve(true);
+    }));
+    return Promise.all(p).then(() => ({ code: 200, data }));
+  })
+
+  .catch((err) => {
+    throw err;
+  });
+
+
 export default {
   getUserInfo,
   updateUser,
   createNewUser,
   registerNewAddress,
   getFreeAddresses,
+  getRegisteredAddresses,
 };

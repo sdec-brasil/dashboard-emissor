@@ -38,4 +38,11 @@ export default {
       passport.authenticate('jwt', { session: false }),
     ],
   },
+
+  'GET /user/registered-addresses': {
+    path: 'Users.getRegisteredAddresses',
+    middlewares: [
+      passport.authenticate('jwt', { session: false }),
+    ],
+  },
 };

@@ -17,6 +17,7 @@ export default function (sequelize, DataTypes) {
   });
 
   address.associate = (models) => {
+    address.belongsTo(models.user, { targetKey: 'id', foreignKey: { name: 'userId', allowNull: false } });
     address.belongsTo(models.wallet, { targetKey: 'id', foreignKey: { name: 'walletId', allowNull: false } });
   };
 

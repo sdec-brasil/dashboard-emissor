@@ -56,4 +56,13 @@ export default class UsersController {
       next(err);
     }
   }
+
+  async getRegisteredAddresses(req, res, next) {
+    try {
+      const response = await service.getRegisteredAddresses(req);
+      res.status(response.code).send(response.data);
+    } catch (err) {
+      next(err);
+    }
+  }
 }
