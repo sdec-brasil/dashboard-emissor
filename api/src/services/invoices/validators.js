@@ -10,17 +10,15 @@ validators.postInvoice = [
   body('invoiceName').not().exists(),
   body('status').not().exists(),
   body('encryptedBorrower').isString().optional(),
-  body('emitter').exists()
-    .custom((value, { req }) => {
-      models.address.findByPk(value).then((addr) => {
-        if (addr === null) throw new Error('emitter não encontrado no sistema.');
-        models.empresa.findOne({ where: { walletId: addr.get('walletId') } })
-          .then((empresa) => {
-            if (empresa === null) throw new Error('enderecoEmissor ainda não foi autorizado por nenhuma empresa.');
-            if (empresa.get('user_id') !== req.user.id) throw new Error('Essa empresa não pertence à este usuário.');
-          });
-      });
-    }),
+  body('emitter')
+    .custom((value, { req }) => models.address.findByPk(value).then((addr) => {
+      if (addr === null) return Promise.reject('Emitter não encontrado no sistema.');
+      if (addr.get('userId') !== req.user.id) Promise.reject('Endereço (emitter) não pertence ao usuário logado.');
+      models.empresa.findOne({ where: { walletId: addr.get('walletId') } })
+        .then((empresa) => {
+          if (empresa === null) Promise.reject('enderecoEmissor ainda não foi autorizado por nenhuma empresa.');
+        });
+    })),
 
   body('taxNumber').isString(),
   // TODO: some validation required for taxNumber
@@ -43,9 +41,9 @@ validators.postInvoice = [
     }),
   body('provision.serviceCode', 'Deve ser uma string de até 20 caracteres')
     .isString().isLength({ max: 20 }).optional(),
-  body('provision.codCnae', 'Deve ser uma string de até 20 caracteres')
+  body('provision.cnaeCode', 'Deve ser uma string de até 20 caracteres')
     .isString().isLength({ max: 20 }).optional(),
-  body('provision.codNBS', 'Deve ser uma string de até 9 caracteres')
+  body('provision.nbsCode', 'Deve ser uma string de até 9 caracteres')
     .isString().isLength({ max: 9 }).optional(),
   body('provision.description', 'Deve ser uma string de até 2000 caracteres')
     .isString().isLength({ max: 2000 }),
@@ -81,7 +79,7 @@ validators.postInvoice = [
       targetValue -= parseInt(data.tributes.deductionsAmount, 10) || 0;
       targetValue -= parseInt(data.tributes.unconditionedDiscountAmount, 10) || 0;
       if (parseInt(value, 10) !== targetValue) {
-        throw new Error('A base de calculo está errada.');
+        return Promise.reject('A base de calculo está errada.');
       }
     }),
   body('tributes.approximateTax').isInt().optional(),
@@ -100,7 +98,7 @@ validators.postInvoice = [
       targetValue -= (parseInt(data.tributes.unconditionedDiscountAmount, 10) || 0);
       targetValue -= (parseInt(data.tributes.conditionedDiscountAmount, 10) || 0);
       if (parseInt(value, 10) !== targetValue) {
-        throw new Error('ValLiquiNfse está incorreto');
+        return Promise.reject('ValLiquiNfse está incorreto');
       }
     }),
   body('borrower.taxNumber').isString().isLength({ max: 14 }).optional(),
