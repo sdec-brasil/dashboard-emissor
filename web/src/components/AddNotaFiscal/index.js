@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   UikFormInputGroup, UikInput, UikButton, UikSelect,
+  UikCheckbox,
 } from '../../@uik';
 import api from '../../utils/api';
 import './style.scss';
@@ -9,8 +10,10 @@ import './style.scss';
 const AddNotaFiscal = () => {
   const [data, setData] = useState({ });
   const [errors, setErrors] = useState({ provision: {} });
+  const [emitters, setEmitters] = useState([]);
   const submit = (e) => {
     e.preventDefault();
+    api.post('/v1/invoices', data);
     // console.log(data);
   };
 
@@ -43,27 +46,24 @@ const AddNotaFiscal = () => {
   };
 
 
+  useEffect(() => {
+    async function getEmitterOptions() {
+      const response = await api.get('/v1/user/registered-addresses');
+      const addr = response.data;
+      setEmitters(addr.map(a => ({ value: a.address, label: `${a.company.name} - ${a.address}` })))  
+      }
+    getEmitterOptions();
+  }, []);
+
+
   return (
     <form onSubmit={e => submit(e)} onChange={(e) => { console.log(data); }}>
       {/* {Object.keys(data).map(key => (<div key={key}>{key}: {data[key]}</div>))} */}
       <UikFormInputGroup>
         <UikSelect label='emissor'
           placeholder="Emissor"
-          onChange={value => setData({ ...data, emitter: value.label })}
-          options={[
-            {
-              value: 1,
-              label: 'Delete',
-            },
-            {
-              value: 2,
-              label: 'Something',
-            },
-            {
-              value: 3,
-              label: 'Here',
-            },
-          ]}
+          onChange={value => setData({ ...data, emitter: value.value })}
+          options={emitters}
 />
         <UikInput
           label="Tomador Encriptado"
@@ -146,14 +146,13 @@ const AddNotaFiscal = () => {
             });
           }}
           />
-        <UikInput
-          label="Incentivo Fiscal"
+        <UikCheckbox label="Incentivo Fiscal"
           name='tributes.incentivoFiscal'
           onChange={e => setData({
             ...data,
-            tributes: { ...data.tributes, incentivoFiscal: e.target.value },
+            tributes: { ...data.tributes, incentivoFiscal: e.target.checked },
           })}
-          />
+           />
 
 
         {/* body('tributes.incentivoFiscal')
