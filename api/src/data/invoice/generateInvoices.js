@@ -17,7 +17,7 @@ function choice(arr) {
 
 // field generator functions --------------------
 
-function txId() {
+function invoiceCode() {
   return uuid();
 }
 
@@ -267,7 +267,7 @@ function enderecoEmissor() {
 }
 
 const generator = {
-  txId,
+  invoiceCode,
   baseCalculo,
   valLiquiNfse,
   dataIncidencia,
