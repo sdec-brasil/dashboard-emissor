@@ -4,14 +4,14 @@ import service from '../services/invoices';
 
 
 export default class InvoiceController {
-  async get(req, res, next) {
-    try {
-      const response = await service.listInvoices(req);
-      res.status(response.code).send(response.data);
-    } catch (err) {
-      next(err);
-    }
-  }
+  // async get(req, res, next) {
+  //   try {
+  //     const response = await service.listInvoices(req);
+  //     res.status(response.code).send(response.data);
+  //   } catch (err) {
+  //     next(err);
+  //   }
+  // }
 
   async post(req, res, next) {
     const errors = validationResult(req);
@@ -27,14 +27,14 @@ export default class InvoiceController {
     }
   }
 
-  async getByTxId(req, res, next) {
-    try {
-      const response = await service.getInvoice(req);
-      res.status(response.code).send(response.data);
-    } catch (err) {
-      next(err);
-    }
-  }
+  // async getByTxId(req, res, next) {
+  //   try {
+  //     const response = await service.getInvoice(req);
+  //     res.status(response.code).send(response.data);
+  //   } catch (err) {
+  //     next(err);
+  //   }
+  // }
 
   async replaceInvoice(req, res, next) {
   // check for validation errors

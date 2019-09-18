@@ -66,7 +66,7 @@ const getInvoice = async req => models.invoice.findByPk(req.params.txid)
     if (inv) {
       return { code: 200, data: serializers.invoice.serialize(inv) };
     }
-    throw new errors.NotFoundError('Invoice', `txId ${req.params.txid}`);
+    throw new errors.NotFoundError('Invoice', `invoiceCode ${req.params.txid}`);
   });
 
 
@@ -108,7 +108,7 @@ const replaceInvoice = async (req) => {
 
   const oldInvoice = await models.invoice.findByPk(req.params.txid, { raw: true });
   if (oldInvoice === null) {
-    throw new errors.NotFoundError('Invoice', `txid ${req.params.txid}`);
+    throw new errors.NotFoundError('Invoice', `invoiceCode ${req.params.txid}`);
   }
 
   const invoiceInfo = serializers.invoice.deserialize(req.body);
@@ -121,15 +121,15 @@ const replaceInvoice = async (req) => {
 
   const lastBlock = await models.block.findOne({ raw: true });
   invoiceInfo.blocoConfirmacaoId = lastBlock.block_id;
-  invoiceInfo.substitutes = oldInvoice.txId;
+  invoiceInfo.substitutes = oldInvoice.invoiceCode;
 
   const inv = await models.invoice.create(invoiceInfo);
 
   await models.invoice.update(
-    { substitutedBy: inv.txId },
+    { substitutedBy: inv.invoiceCode },
     {
       where: {
-        txId: oldInvoice.txId,
+        invoiceCode: oldInvoice.invoiceCode,
       },
     },
   );
