@@ -49,7 +49,7 @@ validators.postInvoice = [
     .isString().isLength({ max: 2000 }),
   body('provision.servicesAmount').isInt(),
 
-  body('tributes.incentivoFiscal')
+  body('tributes.taxBenefit')
     .isBoolean(),
   body('tributes.issExigibility', 'Deve ser um inteiro entre 1 e 7')
     .isInt({ min: 1, max: 7 }),
