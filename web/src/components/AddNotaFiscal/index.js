@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
   UikFormInputGroup, UikInput, UikButton, UikSelect,
-  UikCheckbox,
 } from '../../@uik';
 import api from '../../utils/api';
 import './style.scss';
@@ -12,10 +11,15 @@ const AddNotaFiscal = () => {
     provision: {},
     tributes: {
       calculationBasis: '',
+      netValueNfse: '',
     },
   });
   const [errors, setErrors] = useState({ provision: {}, tributes: {} });
   const [emitters, setEmitters] = useState([]);
+  const errorMessages = {
+    wrongCalcBasis: 'A base de cálculo está negativa.',
+    negativeValue: 'Esse valor não pode ser negativo.',
+  };
   const submit = (e) => {
     e.preventDefault();
     api.post('/v1/invoices', data);
@@ -23,6 +27,7 @@ const AddNotaFiscal = () => {
   };
 
   const cleanError = (field, group = undefined) => {
+    console.log('cleaning  errors', errors);
     if (group) {
       setErrors({
         ...errors,
@@ -50,8 +55,8 @@ const AddNotaFiscal = () => {
     }
   };
 
-
   useEffect(() => {
+    // getting emitter field options for select
     async function getEmitterOptions() {
       const response = await api.get('/v1/user/registered-addresses');
       const addr = response.data;
@@ -61,47 +66,92 @@ const AddNotaFiscal = () => {
   }, []);
 
   useEffect(() => {
+    // automatically calculate calculationBasis field
     const handleCalculationBasis = (provision = {}, tributes = {}) => {
-      let services = 0;
-      let uncond = 0;
-      let cond = 0;
-      if (provision) {
-        services = parseInt(provision.servicesAmount, 10) || 0;
-      }
-      if (tributes) {
-        uncond = parseInt(tributes.unconditionedDiscountAmount, 10) || 0;
-        cond = parseInt(tributes.conditionedDiscountAmount, 10) || 0;
-      }
+      const services = parseInt(provision.servicesAmount, 10) || 0;
+      const uncond = parseInt(tributes.unconditionedDiscountAmount, 10) || 0;
+      const cond = parseInt(tributes.conditionedDiscountAmount, 10) || 0;
       return (services - uncond - cond);
     };
+
     const value = handleCalculationBasis({ ...data.provision }, { ...data.tributes });
-    setData({
-      ...data,
-      tributes: { ...data.tributes, calculationBasis: value.toString() },
-    });
+    const calculationBasis = parseInt(data.tributes.calculationBasis, 10) || 0;
+    if (data.tributes && calculationBasis !== value) {
+      setData({
+        ...data,
+        tributes: { ...data.tributes, calculationBasis: value.toString() },
+      });
+    }
   }, [
-    data.provision.servicesAmount,
-    data.tributes.unconditionedDiscountAmount,
-    data.tributes.conditionedDiscountAmount,
+    data,
+    setData,
   ]);
 
   useEffect(() => {
-    if (data.provision.calculationBasis < 0) {
-      console.log('value < 0', data.provision.calculationBasis);
-      const errorMsg = 'A Base de Cálculo está negativa.';
-      writeError(errorMsg, 'servicesAmount', 'provision');
-      writeError(errorMsg, 'unconditionedDiscount', 'tributes');
-      writeError(errorMsg, 'conditionedDiscount', 'tributes');
+    // automatically calculate netValueNfse field
+    const calcNetValueNfse = (provision = {}, tributes = {}) => {
+      let targetValue = parseInt(provision.servicesAmount, 10) || 0;
+      targetValue -= parseInt(tributes.pisAmount, 10) || 0;
+      targetValue -= parseInt(tributes.cofinsAmount, 10) || 0;
+      targetValue -= parseInt(tributes.inssAmount, 10) || 0;
+      targetValue -= parseInt(tributes.irAmount, 10) || 0;
+      targetValue -= parseInt(tributes.csllAmount, 10) || 0;
+      targetValue -= parseInt(tributes.othersAmountsWithheld, 10) || 0;
+      targetValue -= parseInt(tributes.issAmount, 10) || 0;
+      targetValue -= parseInt(tributes.unconditionedDiscountAmount, 10) || 0;
+      targetValue -= parseInt(tributes.conditionedDiscountAmount, 10) || 0;
+      return targetValue;
+    };
+
+    const target = calcNetValueNfse({ ...data.provision }, { ...data.tributes });
+    const current = parseInt(data.tributes.netValueNfse, 10) || 0;
+    if (current !== target) {
+      setData({
+        ...data,
+        tributes: { ...data.tributes, netValueNfse: target.toString() },
+      });
     }
   }, [
-    errors.provision.servicesAmount,
-    errors.tributes.unconditionedDiscountAmount,
-    errors.tributes.conditionedDiscountAmount,
     data,
-    data.provision,
+    setData,
+  ]);
+
+  useEffect(() => {
+    // general validations
+    // validating calculation Basis
+    if (data.tributes.calculationBasis < 0) {
+      if (!errors.tributes.calculationBasis) {
+        writeError(errorMessages.wrongCalcBasis, 'calculationBasis', 'tributes');
+      }
+      if (!errors.provision.servicesAmount) {
+        writeError(errorMessages.wrongCalcBasis, 'servicesAmount', 'provision');
+      }
+      if (!errors.tributes.conditionedDiscountAmount) {
+        writeError(errorMessages.wrongCalcBasis, 'conditionedDiscountAmount', 'tributes');
+      }
+      if (!errors.tributes.unconditionedDiscountAmount) {
+        writeError(errorMessages.wrongCalcBasis, 'unconditionedDiscountAmount', 'tributes');
+      }
+    } else {
+      if (errors.tributes.calculationBasis === errorMessages.wrongCalcBasis) {
+        cleanError('calculationBasis', 'tributes');
+      }
+      if (errors.provision.servicesAmount === errorMessages.wrongCalcBasis) {
+        cleanError('servicesAmount', 'provision');
+      }
+      if (errors.tributes.conditionedDiscountAmount === errorMessages.wrongCalcBasis) {
+        cleanError('conditionedDiscountAmount', 'tributes');
+      }
+      if (errors.tributes.unconditionedDiscountAmount === errorMessages.wrongCalcBasis) {
+        cleanError('unconditionedDiscountAmount', 'tributes');
+      }
+    }
+  }, [
+    data,
     writeError,
     errors,
-    setErrors,
+    cleanError,
+    errorMessages,
   ]);
 
   return (
@@ -470,37 +520,30 @@ const AddNotaFiscal = () => {
           errorMessage={errors.tributes.calculationBasis}
           disabled
           />
+        <UikInput
+          type='number'
+          label="Imposto Aproximado"
+          name='tributes.approximateTax'
+          errorMessage={errors.tributes.approximateTax}
+          onChange={(e) => {
+            cleanError('approximateTax', 'tributes');
+            if (e.target.value < 0) {
+              writeError('O valor deve ser um número positivo.', 'approximateTax', 'tributes');
+            }
+            setData({
+              ...data,
+              tributes: { ...data.tributes, approximateTax: e.target.value },
+            });
+          }}
+          />
+        <UikInput
+          label="Valor Líquido NFSE"
+          name='tributes.netValueNfse'
+          value={data.tributes.netValueNfse}
+          errorMessage={errors.tributes.netValueNfse}
+          disabled
+          />
 
-        {/*
-  body('tributes.calculationBasis', 'O valor esta incorreto').isInt()
-    .custom(async (value, { req }) => {
-      const data = req.body;
-      let targetValue = parseInt(data.provision.servicesAmount, 10) || 0;
-      targetValue -= parseInt(data.tributes.deductionsAmount, 10) || 0;
-      targetValue -= parseInt(data.tributes.unconditionedDiscountAmount, 10) || 0;
-      if (parseInt(value, 10) !== targetValue) {
-        throw new Error('A base de calculo está errada.');
-      }
-    }),
-  body('tributes.approximateTax').isInt().optional(),
-  body('tributes.netValueNfse')
-    .isInt()
-    .custom(async (value, { req }) => {
-      const data = req.body;
-      let targetValue = (parseInt(data.provision.servicesAmount, 10) || 0);
-      targetValue -= (parseInt(data.tributes.pisAmount, 10) || 0);
-      targetValue -= (parseInt(data.tributes.cofinsAmount, 10) || 0);
-      targetValue -= (parseInt(data.tributes.inssAmount, 10) || 0);
-      targetValue -= (parseInt(data.tributes.irAmount, 10) || 0);
-      targetValue -= (parseInt(data.tributes.csllAmount, 10) || 0);
-      targetValue -= (parseInt(data.tributes.othersAmountsWithheld, 10) || 0);
-      targetValue -= (parseInt(data.tributes.issAmount, 10) || 0);
-      targetValue -= (parseInt(data.tributes.unconditionedDiscountAmount, 10) || 0);
-      targetValue -= (parseInt(data.tributes.conditionedDiscountAmount, 10) || 0);
-      if (parseInt(value, 10) !== targetValue) {
-        throw new Error('ValLiquiNfse está incorreto');
-      }
-    }), */}
         <UikButton primary type='submit'>
     Save
         </UikButton>
