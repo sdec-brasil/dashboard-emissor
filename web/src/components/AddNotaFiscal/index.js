@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import {
   UikFormInputGroup, UikInput, UikButton, UikSelect,
+  UikDivider,
 } from '../../@uik';
 import api from '../../utils/api';
+import countryCodes from '../../utils/countryCodes';
 import './style.scss';
 
 
@@ -13,13 +15,27 @@ const AddNotaFiscal = () => {
       calculationBasis: '',
       netValueNfse: '',
     },
+    borrower: {},
+    intermediary: {},
+    construction: {},
   });
-  const [errors, setErrors] = useState({ provision: {}, tributes: {} });
+  const [errors, setErrors] = useState({
+    provision: {},
+    tributes: {},
+    borrower: {},
+    intermediary: {},
+    construction: {},
+  });
   const [emitters, setEmitters] = useState([]);
   const errorMessages = {
     wrongCalcBasis: 'A base de cálculo está negativa.',
     negativeValue: 'Esse valor não pode ser negativo.',
   };
+
+  const getCountries = () => countryCodes.map(
+    country => ({ value: country[0], label: `${country[1]} (${country[0]})` }),
+  );
+
   const submit = (e) => {
     e.preventDefault();
     api.post('/v1/invoices', data);
@@ -53,6 +69,24 @@ const AddNotaFiscal = () => {
         field: message,
       });
     }
+  };
+
+  const hasErrors = () => {
+    console.log('running hasErrors');
+    Object.keys(errors).forEach((key) => {
+      if (errors[key] instanceof Object) {
+        Object.keys(errors[key]).forEach((k) => {
+          if (errors[key][k] !== undefined) {
+            console.log('found error in', key, k, errors[key][k]);
+            return true;
+          }
+        });
+      } else if (errors[key] !== undefined) {
+        console.log('found error in', key, errors[key]);
+        return true;
+      }
+    });
+    return false;
   };
 
   useEffect(() => {
@@ -158,6 +192,7 @@ const AddNotaFiscal = () => {
     <form onSubmit={e => submit(e)} onChange={(e) => { console.log(data); }}>
       {/* {Object.keys(data).map(key => (<div key={key}>{key}: {data[key]}</div>))} */}
       <UikFormInputGroup>
+        <h2>Informações Gerais</h2>
         <UikSelect label='emissor'
           placeholder="Emissor"
           onChange={value => setData({ ...data, emitter: value.value })}
@@ -170,9 +205,11 @@ const AddNotaFiscal = () => {
   />
         <UikInput
           label="CPF/CNPJ"
-          placeholder="somente números"
+          placeholder="85203389000125"
           onChange={e => setData({ ...data, taxNumber: e.target.value })}
   />
+        <UikDivider />
+        <h2>Provedor</h2>
         <UikInput
           type='date'
           label="Data de Emissão"
@@ -242,6 +279,8 @@ const AddNotaFiscal = () => {
             });
           }}
           />
+        <UikDivider />
+        <h2>Tributos</h2>
         <UikSelect label='Incentivo Fiscal'
           placeholder="Incentivo Fiscal"
           onChange={e => setData({
@@ -544,7 +583,299 @@ const AddNotaFiscal = () => {
           disabled
           />
 
-        <UikButton primary type='submit'>
+        <UikDivider />
+        <h2>Tomador</h2>
+
+        <UikInput
+          label="CPF/CNPJ"
+          name='borrower.taxNumber'
+          placeholder="85203389000125"
+          errorMessage={errors.borrower.taxNumber}
+          onChange={(e) => {
+            cleanError('taxNumber', 'borrower');
+            if (e.target.value.length > 14) {
+              writeError('Valor longo demais (até 14 caracteres).', 'taxNumber', 'borrower');
+            }
+            setData({
+              ...data,
+              borrower: { ...data.borrower, taxNumber: e.target.value },
+            });
+          }}
+          />
+        <UikInput
+          label="NIF (Número de Identificação Fiscal)"
+          name='borrower.nif'
+          errorMessage={errors.borrower.nif}
+          onChange={(e) => {
+            cleanError('nif', 'borrower');
+            if (e.target.value.length > 40) {
+              writeError('Valor longo demais (até 40 caracteres).', 'nif', 'borrower');
+            }
+            setData({
+              ...data,
+              borrower: { ...data.borrower, nif: e.target.value },
+            });
+          }}
+          />
+        <UikInput
+          label="Nome do Tomador"
+          name='borrower.name'
+          errorMessage={errors.borrower.name}
+          onChange={(e) => {
+            cleanError('name', 'borrower');
+            if (e.target.value.length > 150) {
+              writeError('Valor longo demais (até 150 caracteres).', 'name', 'borrower');
+            }
+            setData({
+              ...data,
+              borrower: { ...data.borrower, name: e.target.value },
+            });
+          }}
+          />
+        <UikInput
+          label="Rua"
+          name='borrower.street'
+          errorMessage={errors.borrower.street}
+          onChange={(e) => {
+            cleanError('street', 'borrower');
+            if (e.target.value.length > 145) {
+              writeError('Valor longo demais (até 145 caracteres).', 'street', 'borrower');
+            }
+            setData({
+              ...data,
+              borrower: { ...data.borrower, street: e.target.value },
+            });
+          }}
+          />
+        <UikInput
+          label="Número"
+          name='borrower.number'
+          type='number'
+          errorMessage={errors.borrower.number}
+          onChange={(e) => {
+            cleanError('number', 'borrower');
+            if (e.target.value.toString().length > 10) {
+              writeError('Valor longo demais (até 10 caracteres).', 'number', 'borrower');
+            }
+            setData({
+              ...data,
+              borrower: { ...data.borrower, number: e.target.value },
+            });
+          }}
+          />
+        <UikInput
+          label="Informações Adicionais"
+          name='borrower.additionalInformation'
+          errorMessage={errors.borrower.additionalInformation}
+          onChange={(e) => {
+            cleanError('additionalInformation', 'borrower');
+            if (e.target.value.length > 145) {
+              writeError('Valor longo demais (até 145 caracteres).', 'additionalInformation', 'borrower');
+            }
+            setData({
+              ...data,
+              borrower: { ...data.borrower, additionalInformation: e.target.value },
+            });
+          }}
+          />
+        <UikInput
+          label="Bairro"
+          name='borrower.district'
+          errorMessage={errors.borrower.district}
+          onChange={(e) => {
+            cleanError('district', 'borrower');
+            if (e.target.value.length > 60) {
+              writeError('Valor longo demais (até 60 caracteres).', 'district', 'borrower');
+            }
+            setData({
+              ...data,
+              borrower: { ...data.borrower, district: e.target.value },
+            });
+          }}
+          />
+        <UikInput
+          label="Cidade"
+          name='borrower.city'
+          type='number'
+          errorMessage={errors.borrower.city}
+          onChange={(e) => {
+            setData({
+              ...data,
+              borrower: { ...data.borrower, city: e.target.value },
+            });
+          }}
+          />
+        <UikInput
+          label="Estado"
+          placeholder="RJ"
+          name='borrower.state'
+          errorMessage={errors.borrower.state}
+          onChange={(e) => {
+            cleanError('state', 'borrower');
+            if (e.target.value.length > 2) {
+              writeError('Valor longo demais (até 2 caracteres).', 'state', 'borrower');
+            }
+            setData({
+              ...data,
+              borrower: { ...data.borrower, state: e.target.value },
+            });
+          }}
+          />
+        <UikSelect label='País'
+          placeholder="Selecione um país"
+          onChange={value => setData({
+            ...data,
+            borrower: { ...data.borrower, country: value.value },
+          })}
+          options={getCountries()}
+        />
+        <UikInput
+          label="CEP"
+          name='borrower.postalCode'
+          placeholder='42020001'
+          errorMessage={errors.borrower.postalCode}
+          onChange={(e) => {
+            cleanError('postalCode', 'borrower');
+            if (e.target.value.length > 8) {
+              writeError('Valor longo demais (até 8 caracteres).', 'postalCode', 'borrower');
+            }
+            setData({
+              ...data,
+              borrower: { ...data.borrower, postalCode: e.target.value },
+            });
+          }}
+          />
+        <UikInput
+          label="Email"
+          name='borrower.email'
+          placeholder='valid@email.com'
+          errorMessage={errors.borrower.email}
+          onChange={(e) => {
+            cleanError('email', 'borrower');
+            if (e.target.value.length > 60) {
+              writeError('Valor longo demais (até 60 caracteres).', 'email', 'borrower');
+            }
+            setData({
+              ...data,
+              borrower: { ...data.borrower, email: e.target.value },
+            });
+          }}
+          />
+        <UikInput
+          label="Telefone"
+          name='borrower.phoneNumber'
+          placeholder='2122357721'
+          errorMessage={errors.borrower.phoneNumber}
+          onChange={(e) => {
+            cleanError('phoneNumber', 'borrower');
+            if (e.target.value.length > 20) {
+              writeError('Valor longo demais (até 20 caracteres).', 'phoneNumber', 'borrower');
+            }
+            setData({
+              ...data,
+              borrower: { ...data.borrower, email: e.target.value },
+            });
+          }}
+          />
+        <UikInput
+          label="Telefone"
+          name='borrower.phoneNumber'
+          placeholder='2122357721'
+          errorMessage={errors.borrower.phoneNumber}
+          onChange={(e) => {
+            cleanError('phoneNumber', 'borrower');
+            if (e.target.value.length > 20) {
+              writeError('Valor longo demais (até 20 caracteres).', 'phoneNumber', 'borrower');
+            }
+            setData({
+              ...data,
+              borrower: { ...data.borrower, email: e.target.value },
+            });
+          }}
+          />
+
+        <UikDivider />
+        <h2>Intermediário</h2>
+
+        <UikInput
+          label="CPF/CNPJ"
+          name='intermediary.taxNumber'
+          placeholder='85203389000125'
+          errorMessage={errors.intermediary.taxNumber}
+          onChange={(e) => {
+            cleanError('taxNumber', 'intermediary');
+            if (e.target.value.length > 14) {
+              writeError('Valor longo demais (até 14 caracteres).', 'taxNumber', 'intermediary');
+            }
+            setData({
+              ...data,
+              intermediary: { ...data.intermediary, taxNumber: e.target.value },
+            });
+          }}
+          />
+        <UikInput
+          label="Nome do Intermediário"
+          name='intermediary.name'
+          errorMessage={errors.intermediary.name}
+          onChange={(e) => {
+            cleanError('name', 'intermediary');
+            if (e.target.value.length > 150) {
+              writeError('Valor longo demais (até 150 caracteres).', 'name', 'intermediary');
+            }
+            setData({
+              ...data,
+              intermediary: { ...data.intermediary, name: e.target.value },
+            });
+          }}
+          />
+        <UikInput
+          label="Cidade"
+          name='intermediary.city'
+          type='number'
+          errorMessage={errors.intermediary.city}
+          onChange={(e) => {
+            setData({
+              ...data,
+              intermediary: { ...data.intermediary, city: e.target.value },
+            });
+          }}
+          />
+
+
+        <UikDivider />
+        <h2>Construção Civil</h2>
+
+        <UikInput
+          label="Código da Obra"
+          name='construction.workCode'
+          errorMessage={errors.construction.workCode}
+          onChange={(e) => {
+            cleanError('workCode', 'construction');
+            if (e.target.value.length > 30) {
+              writeError('Valor longo demais (até 30 caracteres).', 'workCode', 'construction');
+            }
+            setData({
+              ...data,
+              construction: { ...data.construction, name: e.target.value },
+            });
+          }}
+          />
+        <UikInput
+          label="ART (Anotação de Responsabilidade Técnica)"
+          name='construction.art'
+          errorMessage={errors.construction.art}
+          onChange={(e) => {
+            cleanError('art', 'construction');
+            if (e.target.value.length > 30) {
+              writeError('Valor longo demais (até 30 caracteres).', 'art', 'construction');
+            }
+            setData({
+              ...data,
+              construction: { ...data.construction, art: e.target.value },
+            });
+          }}
+          />
+        <UikButton primary type='submit' disabled={!hasErrors()}>
     Save
         </UikButton>
       </UikFormInputGroup>
