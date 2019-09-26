@@ -1,73 +1,7 @@
-import ResponseList from '../../utils/response';
-import { limitSettings } from '../../config/config';
 import models from '../../models';
 import {
-  serializers, treatNestedFilters, customErr, query, errors,
+  serializers, query, errors,
 } from '../../utils';
-
-
-const sqs = require('sequelize-querystring');
-
-const listInvoices = (req) => {
-  const sq = sqs.withSymbolicOps(models.Sequelize, {});
-  let filter = req.query.filter ? req.query.filter : '';
-
-  if (!filter.includes('block.block_datetime')) {
-    if (filter.length === 0) {
-      filter += `block.block_datetime lte ${((new Date()).toISOString())}`;
-    } else {
-      filter += `, block.block_datetime lte ${((new Date()).toISOString())}`;
-    }
-  }
-  let where = null;
-
-  try {
-    where = sq.find(filter);
-  } catch (err) {
-    throw new errors.BadFilterError();
-  }
-
-  treatNestedFilters(filter, where);
-
-  return models.invoice.findAndCountAll({
-    offset: parseInt(req.query.offset, 10) || 0,
-    limit: parseInt(req.query.limit, 10) || limitSettings.invoice.get,
-    where,
-    order: req.query.sort ? sq.sort(req.query.sort) : [],
-    include: [{
-      model: models.prefeitura,
-      as: 'prefeitura',
-      attributes: [],
-    },
-    {
-      model: models.block,
-      as: 'block',
-      attributes: [],
-    },
-    {
-      model: models.empresa,
-      as: 'emissor',
-      attributes: [],
-    }],
-  }).then((results) => {
-    const formattedResults = {};
-    formattedResults.rows = results.rows.map(inv => serializers.invoice.serialize(inv));
-    formattedResults.count = results.count;
-    const response = new ResponseList(req, formattedResults, filter);
-    return { code: 200, data: response.value() };
-  }).catch((err) => {
-    throw err;
-  });
-};
-
-
-const getInvoice = async req => models.invoice.findByPk(req.params.txid)
-  .then((inv) => {
-    if (inv) {
-      return { code: 200, data: serializers.invoice.serialize(inv) };
-    }
-    throw new errors.NotFoundError('Invoice', `invoiceCode ${req.params.txid}`);
-  });
 
 
 const postInvoice = async (req) => {
@@ -77,9 +11,10 @@ const postInvoice = async (req) => {
   if (user === null) {
     throw new Error('O usuário ao qual seu token se refere não foi encontrado.');
   }
-  if (user.empresaCnpj === null) {
-    throw new Error('Esse usuário não pertence à uma empresa, logo não pode emitir notas fiscais');
-  }
+  console.log('user', user);
+  // if (user.empresaCnpj === null) {
+  //   throw new Error('Esse usuário não pertence à uma empresa, logo não pode emitir notas fiscais');
+  // }
 
   const invoiceInfo = serializers.invoice.deserialize(req.body);
 
@@ -138,8 +73,6 @@ const replaceInvoice = async (req) => {
 
 
 export default {
-  listInvoices,
-  getInvoice,
   postInvoice,
   replaceInvoice,
 };

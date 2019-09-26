@@ -4,15 +4,6 @@ import service from '../services/invoices';
 
 
 export default class InvoiceController {
-  // async get(req, res, next) {
-  //   try {
-  //     const response = await service.listInvoices(req);
-  //     res.status(response.code).send(response.data);
-  //   } catch (err) {
-  //     next(err);
-  //   }
-  // }
-
   async post(req, res, next) {
     const errors = validationResult(req);
     if (errors.isEmpty()) {
@@ -26,15 +17,6 @@ export default class InvoiceController {
       res.status(422).json({ errors: errors.array() });
     }
   }
-
-  // async getByTxId(req, res, next) {
-  //   try {
-  //     const response = await service.getInvoice(req);
-  //     res.status(response.code).send(response.data);
-  //   } catch (err) {
-  //     next(err);
-  //   }
-  // }
 
   async replaceInvoice(req, res, next) {
   // check for validation errors
