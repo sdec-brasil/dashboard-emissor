@@ -6,9 +6,15 @@ import {
 import api from '../../utils/api';
 import countryCodes from '../../utils/countryCodes';
 import './style.scss';
+import { EXPLORER_URL } from '../../utils/settings';
 
 
 const AddNotaFiscal = () => {
+  const errorMessages = {
+    wrongCalcBasis: 'A base de cálculo está negativa.',
+    negativeValue: 'Esse valor não pode ser negativo.',
+  };
+
   const [data, setData] = useState({
     provision: {},
     tributes: {
@@ -26,21 +32,23 @@ const AddNotaFiscal = () => {
     intermediary: {},
     construction: {},
   });
-  const [emitters, setEmitters] = useState([]);
-  const errorMessages = {
-    wrongCalcBasis: 'A base de cálculo está negativa.',
-    negativeValue: 'Esse valor não pode ser negativo.',
-  };
+  const [emitterOptions, setEmitterOptions] = useState([]);
+  const [emitters, setEmitters] = useState({});
+  const [cnaeOptions, setCnaeOptions] = useState([]);
+  const [isFormValid, setIsFormValid] = useState(true);
+
 
   const getCountries = () => countryCodes.map(
     country => ({ value: country[0], label: `${country[1]} (${country[0]})` }),
   );
+
 
   const submit = (e) => {
     e.preventDefault();
     api.post('/v1/invoices', data);
     // console.log(data);
   };
+
 
   const cleanError = (field, group = undefined) => {
     console.log('cleaning  errors', errors);
@@ -89,12 +97,28 @@ const AddNotaFiscal = () => {
     return false;
   };
 
+  const getCnaeOptions = async (taxNumber) => {
+    const response = await api.get(`${EXPLORER_URL}/v1/companies/${taxNumber}`);
+    console.log(response.data);
+    setCnaeOptions(response.data.economicActivities.map(item => ({
+      value: item.cnae,
+      label: `${item.cnae} - ${item.descricao}`,
+    })));
+  };
+
   useEffect(() => {
     // getting emitter field options for select
     async function getEmitterOptions() {
       const response = await api.get('/v1/user/registered-addresses');
       const addr = response.data;
-      setEmitters(addr.map(a => ({ value: a.address, label: `${a.company.name} - ${a.address}` })));
+      console.log('dataaa', response.data);
+      if (response.data.length) {
+        setEmitterOptions(addr.map(a => ({
+          value: a.address,
+          label: `${a.company.name} - ${a.address}`,
+        })));
+        setEmitters(response.data);
+      }
     }
     getEmitterOptions();
   }, []);
@@ -188,6 +212,14 @@ const AddNotaFiscal = () => {
     errorMessages,
   ]);
 
+  useEffect(() => {
+    if (hasErrors()) {
+      setIsFormValid(false);
+    } else {
+      setIsFormValid(true);
+    }
+  }, [errors, setIsFormValid]);
+
   return (
     <form onSubmit={e => submit(e)} onChange={(e) => { console.log(data); }}>
       {/* {Object.keys(data).map(key => (<div key={key}>{key}: {data[key]}</div>))} */}
@@ -195,8 +227,16 @@ const AddNotaFiscal = () => {
         <h2>Informações Gerais</h2>
         <UikSelect label='emissor'
           placeholder="Emissor"
-          onChange={value => setData({ ...data, emitter: value.value })}
-          options={emitters}
+          onChange={(value) => {
+            const emitter = emitters.filter(a => a.address === value.value);
+            if (emitter.length) {
+              const { taxNumber } = emitter[0].company;
+              getCnaeOptions(taxNumber);
+            }
+            setData({ ...data, emitter: value.value });
+          }
+          }
+          options={emitterOptions}
 />
         <UikInput
           label="Tomador Encriptado"
@@ -222,6 +262,7 @@ const AddNotaFiscal = () => {
         <UikInput
           type='number'
           label="Codigo do Municipio"
+          placeholder='1100346'
           name='provision.cityServiceLocation'
           onChange={e => setData({
             ...data,
@@ -237,15 +278,14 @@ const AddNotaFiscal = () => {
             provision: { ...data.provision, serviceCode: e.target.value },
           })}
   />
-        <UikInput
-          type='number'
-          label="CNAE"
-          name='provision.cnaeCode'
+        <UikSelect label='CNAE'
+          placeholder="Selecione um CNAE"
           onChange={e => setData({
             ...data,
-            provision: { ...data.provision, cnaeCode: e.target.value },
+            provision: { ...data.provision, cnaeCode: e.value },
           })}
-  />
+          options={cnaeOptions}
+          />
         <UikInput
           type='number'
           label="NBS"
@@ -696,6 +736,7 @@ const AddNotaFiscal = () => {
         <UikInput
           label="Cidade"
           name='borrower.city'
+          placeholder='1100346'
           type='number'
           errorMessage={errors.borrower.city}
           onChange={(e) => {
@@ -831,6 +872,7 @@ const AddNotaFiscal = () => {
         <UikInput
           label="Cidade"
           name='intermediary.city'
+          placeholder='1100346'
           type='number'
           errorMessage={errors.intermediary.city}
           onChange={(e) => {
@@ -875,7 +917,7 @@ const AddNotaFiscal = () => {
             });
           }}
           />
-        <UikButton primary type='submit' disabled={!hasErrors()}>
+        <UikButton primary type='submit' disabled={isFormValid}>
     Save
         </UikButton>
       </UikFormInputGroup>
