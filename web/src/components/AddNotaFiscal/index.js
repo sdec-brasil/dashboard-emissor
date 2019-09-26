@@ -4,6 +4,7 @@ import {
   UikDivider,
 } from '../../@uik';
 import api from '../../utils/api';
+import { invoiceSerializer } from '../../utils/serializers';
 import countryCodes from '../../utils/countryCodes';
 import './style.scss';
 import { EXPLORER_URL } from '../../utils/settings';
@@ -42,10 +43,11 @@ const AddNotaFiscal = () => {
     country => ({ value: country[0], label: `${country[1]} (${country[0]})` }),
   );
 
-
   const submit = (e) => {
     e.preventDefault();
-    api.post('/v1/invoices', data);
+    const formData = invoiceSerializer(data);
+
+    api.post('/v1/invoices', formData);
     // console.log(data);
   };
 
@@ -232,8 +234,10 @@ const AddNotaFiscal = () => {
             if (emitter.length) {
               const { taxNumber } = emitter[0].company;
               getCnaeOptions(taxNumber);
+              setData({ ...data, taxNumber, emitter: value.value });
+            } else {
+              setData({ ...data, emitter: value.value });
             }
-            setData({ ...data, emitter: value.value });
           }
           }
           options={emitterOptions}
@@ -246,6 +250,9 @@ const AddNotaFiscal = () => {
         <UikInput
           label="CPF/CNPJ"
           placeholder="85203389000125"
+          name='taxNumber'
+          disabled
+          value={data.taxNumber}
           onChange={e => setData({ ...data, taxNumber: e.target.value })}
   />
         <UikDivider />
@@ -818,22 +825,6 @@ const AddNotaFiscal = () => {
             });
           }}
           />
-        <UikInput
-          label="Telefone"
-          name='borrower.phoneNumber'
-          placeholder='2122357721'
-          errorMessage={errors.borrower.phoneNumber}
-          onChange={(e) => {
-            cleanError('phoneNumber', 'borrower');
-            if (e.target.value.length > 20) {
-              writeError('Valor longo demais (até 20 caracteres).', 'phoneNumber', 'borrower');
-            }
-            setData({
-              ...data,
-              borrower: { ...data.borrower, email: e.target.value },
-            });
-          }}
-          />
 
         <UikDivider />
         <h2>Intermediário</h2>
@@ -917,7 +908,7 @@ const AddNotaFiscal = () => {
             });
           }}
           />
-        <UikButton primary type='submit' disabled={isFormValid}>
+        <UikButton primary type='submit' disabled={false}>
     Save
         </UikButton>
       </UikFormInputGroup>

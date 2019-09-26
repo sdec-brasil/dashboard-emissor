@@ -2,6 +2,7 @@ import React from 'react';
 import { useDispatch } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { setWidget } from '../../reducers/mainState';
+import { EXPLORER_URL } from '../../utils/settings';
 import ListView from '../ListView';
 import './style.scss';
 
@@ -11,12 +12,11 @@ const NotasFiscaisWidget = withRouter(({ history }) => {
   dispatch(setWidget('NotasFicaisWidget'));
   const notasFicaisProps = {
     headers: [
-      ['address', 'Endereco'],
-      ['privateKey', 'Privado'],
-      ['publicKey', 'Publico'],
-      ['createdAt', 'Criado em', 'date'],
+      ['nonce', 'Nonce'],
+      ['taxNumber', 'CPF/CNPJ'],
+      ['emitter', 'Emissor'],
     ],
-    endpoint: '/v1/invoices',
+    endpoint: `${EXPLORER_URL}/v1/invoices`,
     title: 'Notas Fiscais',
     keyField: 'nonce',
     buttonText: 'Nova Nota Fiscal',
