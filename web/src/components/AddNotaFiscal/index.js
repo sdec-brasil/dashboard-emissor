@@ -45,8 +45,10 @@ const AddNotaFiscal = () => {
 
   const submit = (e) => {
     e.preventDefault();
-    const formData = invoiceSerializer(data);
-
+    // const formData = invoiceSerializer(data);
+    // api.post('/v1/invoices', formData);
+    const formData = JSON.parse(JSON.stringify(data));
+    console.log('submiting formData', formData);
     api.post('/v1/invoices', formData);
     // console.log(data);
   };
@@ -336,8 +338,8 @@ const AddNotaFiscal = () => {
           })}
           options={
             [
-              { value: true, label: 'Sim' },
-              { value: false, label: 'Não' },
+              { value: '1', label: 'Sim' },
+              { value: '2', label: 'Não' },
             ]}
           />
         <UikSelect label='Exigibilidade de ISS'
@@ -368,7 +370,7 @@ const AddNotaFiscal = () => {
             }
             setData({
               ...data,
-              provision: { ...data.tributes, processNumber: e.target.value },
+              tributes: { ...data.tributes, processNumber: e.target.value },
             });
           }}
           />
@@ -384,7 +386,7 @@ const AddNotaFiscal = () => {
             }
             setData({
               ...data,
-              provision: { ...data.tributes, issRate: e.target.value },
+              tributes: { ...data.tributes, issRate: e.target.value },
             });
           }}
           />
@@ -400,7 +402,7 @@ const AddNotaFiscal = () => {
             }
             setData({
               ...data,
-              provision: { ...data.tributes, issAmount: e.target.value },
+              tributes: { ...data.tributes, issAmount: e.target.value },
             });
           }}
           />
@@ -412,8 +414,8 @@ const AddNotaFiscal = () => {
           })}
           options={
             [
-              { value: true, label: 'Sim' },
-              { value: false, label: 'Não' },
+              { value: '1', label: 'Sim' },
+              { value: '2', label: 'Não' },
             ]}
           />
         <UikSelect label='Responsável pela Retenção'
