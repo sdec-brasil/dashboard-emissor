@@ -1,32 +1,23 @@
 import models from '../../models';
 import {
-  serializers, query, errors,
+  serializers, query, errors, chain,
 } from '../../utils';
 
 
 const postInvoice = async (req) => {
-  const tk = req.headers.authorization.split(' ')[1];
-  const token = await query.accessTokens.findByToken(tk);
-  const user = await models.user.findByPk(token.user_id);
-  if (user === null) {
-    throw new Error('O usuário ao qual seu token se refere não foi encontrado.');
-  }
-  console.log('user', user);
-  // if (user.empresaCnpj === null) {
-  //   throw new Error('Esse usuário não pertence à uma empresa, logo não pode emitir notas fiscais');
-  // }
+  const invoiceData = req.body;
+  console.log(invoiceData);
 
-  const invoiceInfo = serializers.invoice.deserialize(req.body);
+  await chain.publishNote(invoiceData);
 
+  // const empresa = await models.empresa.findByPk(user.empresaCnpj, { raw: true });
+  // invoiceInfo.enderecoEmissor = empresa.endBlock;
 
-  const empresa = await models.empresa.findByPk(user.empresaCnpj, { raw: true });
-  invoiceInfo.enderecoEmissor = empresa.endBlock;
+  // const lastBlock = await models.block.findOne({ raw: true });
+  // invoiceInfo.blocoConfirmacaoId = lastBlock.block_id;
 
-  const lastBlock = await models.block.findOne({ raw: true });
-  invoiceInfo.blocoConfirmacaoId = lastBlock.block_id;
-
-  const inv = await models.invoice.create(invoiceInfo);
-  return { code: 201, data: serializers.invoice.serialize(inv) };
+  // const inv = await models.invoice.create(invoiceInfo);
+  return { code: 201, data: invoiceData };
 };
 
 
