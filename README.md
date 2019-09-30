@@ -19,6 +19,16 @@ A [documentação](https://sdec-brasil.github.io/docs/#invoice-explorer) do proj
 **API**: Node + Express + Sequelize + RestAdapter + MySql
 **WebApp**: React + Redux
 
+
+## ▶️ Checks
+- [x] Registro e login de novos usuários
+- [x] Geração de um novo endereço emissor para um usuário
+- [x] Monitorar autorizações de endereços emissores na blockchain
+- [x] Emissão de nota fiscal
+- [ ] Acompanhamento das notas fiscais emitidas (já foi registrada na blockchain?)
+- [ ] Emissão de notas de pagamento
+- [ ] Acompanhamento das notas de pagamento emitidas (já está na blockchain? já foi paga?)
+
 ## ▶️ Rodando
 - Clone o repositório
 - Instale os módulos NPM da API `cd api` e `npm install`
@@ -26,7 +36,7 @@ A [documentação](https://sdec-brasil.github.io/docs/#invoice-explorer) do proj
 - Modifique `/api/src/config/database.json` pelas credenciais do Banco de Dados
 - Modifique `/api/src/config/config.json` pela porta da API (opcional)
 - Modifique `/web/.env` pela porta web (opcional)
-- Rode a API `cd api` e `npm start`, visite @ http://localhost:8000/graphql/
+- Rode a API `cd api` e `npm start`, visite @ http://localhost:8000/
 - Rode o Webapp `cd web` e `npm start`, visite @ http://localhost:3000/
 
 ## ▶️ Rodando para Desenvolvimento
