@@ -1,12 +1,12 @@
 # SDEC: Dashboard
 
-🇧🇷 O repositório contém a estrutura por trás do painel de controle público do sistema fornecido pela Fundação. Aqui está armazenado ambas as API's e a interface gráfica.
+🇧🇷 O repositório contém um sistema que facilita a emissão de nota fiscal para quem não deseja lidar diretamente com a blockchain. Esse repositório também serve de exemplo para terceiros que queiram prestar o serviço de emissão de notas em nome de outras empresas na blockchain. Aqui está armazenada tanto a API quanto a interface gráfica.
 
-🇺🇸 This repo hosts the source code behind the public explorer, containing both API's and also the GUI.
+🇺🇸 This repo hosts the source code of a system that eases the emittion of invoices for users that do not want do interact directly with the blockchain. It is also an example of how to build a system to provide the service of registering invoices to the blockchain in name of other individuals and companies. This repo contains both API's and also the GUI.
 
 ## 📝 Documentação
 
-A [documentação](https://sdec.readme.io) do projeto possui:
+A [documentação](https://sdec-brasil.github.io/docs/#invoice-explorer) do projeto possui:
 
 - Explicações sobre a arquitetura do sistema
 - Referência para as API's
@@ -16,7 +16,7 @@ A [documentação](https://sdec.readme.io) do projeto possui:
 
 ## 🥣 Sopa de Letrinhas
 
-**API**: Node + Express + GraphQL + Sequelize + RestAdapter + Postgres
+**API**: Node + Express + Sequelize + RestAdapter + MySql
 **WebApp**: React + Redux
 
 ## ▶️ Rodando
@@ -48,6 +48,20 @@ A [documentação](https://sdec.readme.io) do projeto possui:
 - Em outro terminal, rode a API:`cd dashboard-emissor/api && npm start`. (@ http://localhost:8000)
 - Em outro terminal, rode o webapp:`cd dashboard-emissor/web && npm start`. ( @ http://localhost:3000)
 
+## ▶️ Como funciona?
+  Esse projeto é composto de um servidor e uma interface, onde usuários podem se registrar e emitir notas que são registradas na blockchain. Para isso, o projeto roda um nó da blockchain. Ele também utiliza o invoice-explorer público da chain.
+  O fluxo de um usuário é o seguinte:
+  1. 0 usuário se registra no dashboard-emissor.
+  2. O usuário gera um novo endereço pelo dashboard-emissor.
+  3. O usuário requisita a que a junta comercial autorize esse novo endereço a emitir notas fiscais em nome de alguma empresa dele.
+  4. A junta comercial autoriza essa emissão, e publica a autorizaço na blockchain.
+  5. O dashboard-emissor detecta essa autorização. Quando o usuário acessar a página de Empresas, a empresa autorizada estará listada lá.
+  6. O usuário acessa Notas Fiscais e pode emitir uma nova nota fiscal para alguma de suas empresas cadastradas.
+  7 O dashboard-emissor registra na blockchain a nova nota emitida pelo usuário.
+  
+
+## ▶️ Próximo passos?
+  Os próximos passos são construir a parte do sistema de notas de pagamento. Uma nota de pagamento representa o pagamento do imposto de um conjunto de notas fiscais. Com isso, o usuário poderá pagar diversas notas de uma só vez.
 
 
 ## 🏗 Estrutura do Projeto
